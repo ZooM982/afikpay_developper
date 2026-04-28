@@ -24,6 +24,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 			"http://localhost:5173",
 			"https://www.afrikpay.tech",
 			"https://afrikpay.tech",
+			"https://afikpay-developper.vercel.app",
 		];
 
 app.use(
@@ -46,12 +47,18 @@ const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000,
 	message: "Too many requests, please try again later.",
 });
-app.use("/api", limiter);
+app.use(["/api", "/"], limiter);
 
 // Routes
-app.get("/api/ping", (req, res) => res.send("pong"));
-app.use("/api/developer", developerRoutes);
-app.use("/api/v1", apiV1Routes);
+const apiRouter = express.Router();
+
+apiRouter.get("/ping", (req, res) => res.send("pong"));
+apiRouter.use("/developer", developerRoutes);
+apiRouter.use("/v1", apiV1Routes);
+
+// Appliquer le routeur sur /api et sur la racine pour plus de flexibilité selon le déploiement
+app.use("/api", apiRouter);
+app.use("/", apiRouter);
 
 const PORT = process.env.DEV_PORT || 5001;
 

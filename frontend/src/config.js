@@ -2,7 +2,7 @@ const environment = import.meta.env.VITE_APP_ENV || import.meta.env.MODE || "dev
 
 const API_URLS = {
 	development: "http://localhost:5001/api", // Note: New port 5001
-	production: "https://afikpay-developper.vercel.app//api",
+	production: "https://afikpay-developper.vercel.app/api",
 };
 
 export const getApiUrl = () => {
