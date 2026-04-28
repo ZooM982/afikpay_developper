@@ -17,8 +17,7 @@ async function connectToMongo() {
 	if (db) return db; // Éviter les reconnexions inutiles
 	const uri = process.env.MONGO_URI;
 	if (!uri) {
-		console.error("MONGO_URI non trouvée dans process.env");
-		process.exit(1);
+		throw new Error("MONGO_URI non trouvée dans process.env");
 	}
 	try {
 		await mongoose.connect(uri);
@@ -38,7 +37,7 @@ async function connectToMongo() {
 		return db;
 	} catch (err) {
 		console.error("Erreur MongoDB:", err.message);
-		process.exit(1);
+		throw err;
 	}
 }
 

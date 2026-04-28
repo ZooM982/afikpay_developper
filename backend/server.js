@@ -49,6 +49,17 @@ const limiter = rateLimit({
 });
 app.use(["/api", "/"], limiter);
 
+// Middleware pour s'assurer que MongoDB est connecté avant chaque requête
+app.use(async (req, res, next) => {
+	try {
+		await connectToMongo();
+		next();
+	} catch (err) {
+		console.error("Database connection error:", err);
+		res.status(500).json({ error: "Database connection failed" });
+	}
+});
+
 // Routes
 const apiRouter = express.Router();
 
@@ -62,8 +73,13 @@ app.use("/", apiRouter);
 
 const PORT = process.env.DEV_PORT || 5001;
 
-connectToMongo().then(() => {
-	server.listen(PORT, () => {
-		console.log(`AfriKPay Developer API started on port ${PORT}`);
+// Pour le déploiement local / traditionnel
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+	connectToMongo().then(() => {
+		server.listen(PORT, () => {
+			console.log(`AfriKPay Developer API started on port ${PORT}`);
+		});
 	});
-});
+}
+
+module.exports = app;
