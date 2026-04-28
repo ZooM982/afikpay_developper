@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const { MongoClient } = mongoose.mongo;
+const { MongoClient } = require("mongodb");
 
 let client;
 let db;
@@ -14,16 +13,18 @@ let reviewsCollection;
 let appSettingsCollection;
 
 async function connectToMongo() {
-	if (db) return db; // Éviter les reconnexions inutiles
+	if (db) return db;
 	const uri = process.env.MONGO_URI;
 	if (!uri) {
 		throw new Error("MONGO_URI non trouvée dans process.env");
 	}
 	try {
-		await mongoose.connect(uri);
-		client = new MongoClient(uri);
+		if (!client) {
+			client = new MongoClient(uri);
+		}
 		await client.connect();
-		db = client.db("afripay"); // Utilise la base existante (minuscules)
+		db = client.db("afripay");
+		
 		transactionsCollection = db.collection("transactions");
 		notificationsCollection = db.collection("notifications");
 		usersCollection = db.collection("users");
@@ -33,6 +34,7 @@ async function connectToMongo() {
 		countriesCollection = db.collection("countries");
 		reviewsCollection = db.collection("reviews");
 		appSettingsCollection = db.collection("appSettings");
+		
 		console.log("Connecté à MongoDB");
 		return db;
 	} catch (err) {
