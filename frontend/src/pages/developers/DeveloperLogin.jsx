@@ -36,9 +36,6 @@ const DeveloperLogin = () => {
 		<div className="min-h-screen bg-slate-900 flex items-center justify-center px-4 py-16">
 			<div className="w-full max-w-md">
 				<div className="text-center mb-10">
-					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/20 border border-primary-500/30 text-primary-400 text-xs font-black uppercase tracking-widest mb-6">
-						<Key className="w-3.5 h-3.5" /> Portail Développeur
-					</div>
 					<h1 className="text-3xl font-black text-white mb-3">Connexion</h1>
 					<p className="text-slate-400 font-medium">Accédez à vos clés API et statistiques</p>
 				</div>

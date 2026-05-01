@@ -31,6 +31,11 @@ export default {
 					900: "#0f172a",
 					950: "#020617",
 				},
+				gold: {
+					light: "#f2d06b",
+					DEFAULT: "#d4af37",
+					dark: "#b8860b",
+				},
 			},
 			borderRadius: {
 				"2xl": "1rem",

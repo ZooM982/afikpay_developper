@@ -9,6 +9,7 @@ const { connectToMongo } = require("./config/db");
 
 const developerRoutes = require("./routes/developerRoutes");
 const apiV1Routes = require("./routes/apiV1Routes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +22,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 	? process.env.ALLOWED_ORIGINS.split(",")
 	: [
 			"http://localhost:3000",
+			"http://localhost:3001",
 			"http://localhost:5173",
 			"https://www.afrikpay.tech",
 			"https://afrikpay.tech",
@@ -69,6 +71,7 @@ const apiRouter = express.Router();
 apiRouter.get("/ping", (req, res) => res.send("pong"));
 apiRouter.use("/developer", developerRoutes);
 apiRouter.use("/v1", apiV1Routes);
+apiRouter.use("/admin", adminRoutes);
 
 // Appliquer le routeur sur /api et sur la racine pour plus de flexibilité selon le déploiement
 app.use("/api", apiRouter);

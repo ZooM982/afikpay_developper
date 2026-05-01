@@ -17,5 +17,8 @@ router.get("/stats", authenticateDeveloper, devCtrl.getDeveloperStats);
 router.get("/logs", authenticateDeveloper, devCtrl.getDeveloperLogs);
 router.get("/transactions", authenticateDeveloper, devCtrl.getDeveloperTransactions);
 router.post("/withdraw", authenticateDeveloper, devCtrl.requestDeveloperWithdrawal);
+router.get("/countries", authenticateDeveloper, devCtrl.getAvailableCountries);
+router.post("/countries/request", authenticateDeveloper, devCtrl.requestCountries);
+router.post("/webhook", authenticateDeveloper, devCtrl.updateDeveloperWebhook);
 
 module.exports = router;

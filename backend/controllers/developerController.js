@@ -1,9 +1,11 @@
 // controllers/developerController.js
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { getDb } = require("../config/db");
 const { createApiKey, getClientKeys, revokeApiKey } = require("../models/apiKeyModel");
 const { getClientLogs, getClientUsageStats } = require("../models/apiLogModel");
+const countries = require("../config/countries");
 
 const devCol = () => getDb().collection("developer_accounts");
 
@@ -25,6 +27,7 @@ const registerDeveloper = async (req, res) => {
 			useCase,
 			passwordHash: hash,
 			plan,
+			webhookSecret: crypto.randomBytes(32).toString("hex"),
 			status: "active",
 			createdAt: new Date(),
 		};
@@ -226,6 +229,94 @@ const requestDeveloperWithdrawal = async (req, res) => {
 	}
 };
 
+// ─── Pays & Services ────────────────────────────────────────────────────────
+const getAvailableCountries = async (req, res) => {
+	try {
+		const { devId } = req.devUser;
+		const { ObjectId } = require("mongoose").mongo;
+		const dev = await devCol().findOne({ _id: new ObjectId(devId) }, { projection: { countryAccess: 1 } });
+		
+		const devCountries = dev?.countryAccess || [];
+		
+		const result = countries.map(c => {
+			const statusObj = devCountries.find(dc => dc.countryCode === c.code);
+			return {
+				...c,
+				status: statusObj ? statusObj.status : "not_requested",
+				requestedAt: statusObj ? statusObj.requestedAt : null,
+			};
+		});
+		
+		res.json({ countries: result });
+	} catch (err) {
+		console.error("[dev] getAvailableCountries:", err);
+		res.status(500).json({ error: "Erreur serveur" });
+	}
+};
+
+const requestCountries = async (req, res) => {
+	try {
+		const { devId } = req.devUser;
+		const { countryCodes } = req.body; // Array of strings: ['SN', 'CM']
+		const { ObjectId } = require("mongoose").mongo;
+
+		if (!Array.isArray(countryCodes) || countryCodes.length === 0) {
+			return res.status(400).json({ error: "countryCodes requis (tableau)" });
+		}
+
+		const newRequests = countryCodes.map(code => ({
+			countryCode: code,
+			status: "pending",
+			requestedAt: new Date(),
+			updatedAt: new Date()
+		}));
+
+		// On ajoute seulement ceux qui n'existent pas déjà ou qui ont été rejetés
+		for (const reqObj of newRequests) {
+			await devCol().updateOne(
+				{ _id: new ObjectId(devId) },
+				{ $pull: { countryAccess: { countryCode: reqObj.countryCode, status: { $in: ["not_requested", "rejected"] } } } }
+			);
+			
+			// Vérifier si déjà actif ou en attente
+			const dev = await devCol().findOne({ _id: new ObjectId(devId), "countryAccess.countryCode": reqObj.countryCode });
+			if (!dev) {
+				await devCol().updateOne(
+					{ _id: new ObjectId(devId) },
+					{ $push: { countryAccess: reqObj } }
+				);
+			}
+		}
+
+		res.json({ message: "Demande de pays enregistrée avec succès. En attente d'approbation admin." });
+	} catch (err) {
+		console.error("[dev] requestCountries:", err);
+		res.status(500).json({ error: "Erreur serveur" });
+	}
+};
+
+const updateDeveloperWebhook = async (req, res) => {
+	try {
+		const { devId } = req.devUser;
+		const { webhookUrl } = req.body;
+		const { ObjectId } = require("mongoose").mongo;
+
+		if (webhookUrl && !webhookUrl.startsWith("http")) {
+			return res.status(400).json({ error: "URL invalide" });
+		}
+
+		await devCol().updateOne(
+			{ _id: new ObjectId(devId) },
+			{ $set: { webhookUrl: webhookUrl || null, updatedAt: new Date() } }
+		);
+
+		res.json({ message: "Configuration webhook mise à jour" });
+	} catch (err) {
+		console.error("[dev] updateDeveloperWebhook:", err);
+		res.status(500).json({ error: "Erreur serveur" });
+	}
+};
+
 // Exports explicites pour éviter les erreurs de chargement
 module.exports = {
 	registerDeveloper,
@@ -238,4 +329,7 @@ module.exports = {
 	getDeveloperProfile,
 	getDeveloperTransactions,
 	requestDeveloperWithdrawal,
+	getAvailableCountries,
+	requestCountries,
+	updateDeveloperWebhook,
 };

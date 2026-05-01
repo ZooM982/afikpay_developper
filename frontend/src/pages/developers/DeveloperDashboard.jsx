@@ -1,10 +1,11 @@
 // pages/developers/DeveloperDashboard.jsx
 import React, { useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import DashboardLayout from "../../components/DashboardLayout";
 import {
 	Key, Copy, Eye, EyeOff, RefreshCw, Trash2, Plus,
 	BarChart3, Activity, AlertTriangle, CheckCircle,
-	LogOut, BookOpen, ExternalLink, Zap, Clock,
+	LogOut, BookOpen, ExternalLink, Zap, Clock, Shield
 } from "lucide-react";
 import { getApiUrl } from "../../config";
 
@@ -103,6 +104,7 @@ const WithdrawModal = ({ isOpen, onClose, balance, onWithdraw }) => {
 // ── Main ────────────────────────────────────────────────────────────────────
 const DeveloperDashboard = () => {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const [devToken] = useState(() => localStorage.getItem("devToken"));
 	const [keys, setKeys] = useState([]);
 	const [stats, setStats] = useState(null);
@@ -116,7 +118,19 @@ const DeveloperDashboard = () => {
 	const [newEnv, setNewEnv] = useState("live");
 	const [justCreated, setJustCreated] = useState(null);
 	const [activeTab, setActiveTab] = useState("keys");
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		const tab = params.get("tab");
+		if (tab) setActiveTab(tab);
+		else setActiveTab("keys");
+	}, [location]);
 	const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+	const [availableCountries, setAvailableCountries] = useState([]);
+	const [requestingCountries, setRequestingCountries] = useState(false);
+	const [webhookUrl, setWebhookUrl] = useState("");
+	const [webhookSecret, setWebhookSecret] = useState("");
+	const [updatingWebhook, setUpdatingWebhook] = useState(false);
 
 	const headers = { Authorization: `Bearer ${devToken}`, "Content-Type": "application/json" };
 
@@ -124,23 +138,28 @@ const DeveloperDashboard = () => {
 		if (!devToken) { navigate("/login"); return; }
 		setLoading(true);
 		try {
-			const [keysRes, statsRes, logsRes, txRes] = await Promise.all([
+			const [keysRes, statsRes, logsRes, txRes, countriesRes] = await Promise.all([
 				fetch(`${API}/developer/keys`, { headers }),
 				fetch(`${API}/developer/stats`, { headers }),
 				fetch(`${API}/developer/logs?limit=20`, { headers }),
 				fetch(`${API}/developer/transactions`, { headers }),
+				fetch(`${API}/developer/countries`, { headers }),
 			]);
 			if (keysRes.status === 401) { localStorage.removeItem("devToken"); navigate("/login"); return; }
-			const [keysData, statsData, logsData, txData] = await Promise.all([
+			const [keysData, statsData, logsData, txData, countriesData] = await Promise.all([
 				keysRes.json(), 
 				statsRes.json(), 
 				logsRes.json(),
-				txRes.json()
+				txRes.json(),
+				countriesRes.json(),
 			]);
 			setKeys(keysData.keys || []);
 			setStats(statsData);
 			setLogs(logsData.logs || []);
 			setApiTransactions(txData.transactions || []);
+			setAvailableCountries(countriesData.countries || []);
+			setWebhookUrl(statsData.webhookUrl || "");
+			setWebhookSecret(statsData.webhookSecret || "••••••••••••••••");
 		} catch (e) { console.error(e); }
 		finally { setLoading(false); }
 	}, [devToken, navigate]);
@@ -194,40 +213,48 @@ const DeveloperDashboard = () => {
 		}
 	};
 
+	const handleCountryRequest = async (countryCode) => {
+		setRequestingCountries(true);
+		try {
+			const res = await fetch(`${API}/developer/countries/request`, {
+				method: "POST",
+				headers,
+				body: JSON.stringify({ countryCodes: [countryCode] }),
+			});
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error);
+			alert(data.message);
+			fetchAll();
+		} catch (e) {
+			alert(e.message);
+		} finally {
+			setRequestingCountries(false);
+		}
+	};
+
+	const handleWebhookUpdate = async () => {
+		setUpdatingWebhook(true);
+		try {
+			const res = await fetch(`${API}/developer/webhook`, {
+				method: "POST",
+				headers,
+				body: JSON.stringify({ webhookUrl }),
+			});
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error);
+			alert(data.message);
+		} catch (e) {
+			alert(e.message);
+		} finally {
+			setUpdatingWebhook(false);
+		}
+	};
+
 	const pct = (used, quota) => Math.min(100, Math.round((used / quota) * 100));
 
-	if (loading) return (
-		<div className="min-h-screen bg-slate-950 flex items-center justify-center">
-			<div className="w-10 h-10 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
-		</div>
-	);
-
 	return (
-		<div className="min-h-screen bg-slate-50 dark:bg-secondary-950 font-sans">
-			{/* ── Topbar ── */}
-			<header className="sticky top-0 z-40 bg-white/90 dark:bg-secondary-900/90 backdrop-blur-md border-b border-slate-200 dark:border-secondary-800">
-				<div className="container mx-auto px-4 max-w-6xl flex items-center justify-between h-16">
-					<div className="flex items-center gap-3">
-						<div className="w-8 h-8 bg-primary-500 rounded-xl flex items-center justify-center">
-							<Key className="w-4 h-4 text-white" />
-						</div>
-						<div>
-							<p className="text-sm font-black text-slate-900 dark:text-white leading-none">Developer Portal</p>
-							<p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">AfriKPay API</p>
-						</div>
-					</div>
-					<div className="flex items-center gap-3">
-						<Link to="/docs" className="hidden sm:flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400 hover:text-primary-600 font-bold transition-colors">
-							<BookOpen className="w-4 h-4" /> Docs
-						</Link>
-						<button onClick={logout} className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400 hover:text-red-500 font-bold transition-colors">
-							<LogOut className="w-4 h-4" /> Déconnexion
-						</button>
-					</div>
-				</div>
-			</header>
-
-			<div className="container mx-auto px-4 max-w-6xl py-8 space-y-8">
+		<DashboardLayout type="client" userEmail={stats?.email || ""}>
+			<div className="space-y-8">
 				{/* ── Alert clé créée ── */}
 				{justCreated && (
 					<div className="p-5 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-400 dark:border-amber-600">
@@ -294,17 +321,7 @@ const DeveloperDashboard = () => {
 					<UsageChart daily={stats?.daily || []} />
 				</div>
 
-				{/* ── Tabs ── */}
-				<div className="border-b border-slate-200 dark:border-secondary-800">
-					<div className="flex gap-1">
-						{[["keys", "Mes clés API"], ["tx", "Transactions"], ["logs", "Logs API"]].map(([id, label]) => (
-							<button key={id} onClick={() => setActiveTab(id)}
-								className={`px-5 py-3 text-sm font-black border-b-2 transition-colors ${activeTab === id ? "border-primary-500 text-primary-600" : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-gray-300"}`}>
-								{label}
-							</button>
-						))}
-					</div>
-				</div>
+
 
 				{/* ── Keys tab ── */}
 				{activeTab === "keys" && (
@@ -381,6 +398,55 @@ const DeveloperDashboard = () => {
 											<div className={`h-full rounded-full transition-all ${pct(k.usedThisMonth, k.quotaMonthly) > 85 ? "bg-red-500" : "bg-primary-500"}`}
 												style={{ width: `${pct(k.usedThisMonth, k.quotaMonthly)}%` }} />
 										</div>
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+				)}
+
+				{/* ── Countries tab ── */}
+				{activeTab === "countries" && (
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+						{availableCountries.map((c) => (
+							<div key={c.code} className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 flex flex-col justify-between hover:shadow-xl transition-all group">
+								<div>
+									<div className="flex justify-between items-start mb-4">
+										<span className="text-4xl">{c.flag}</span>
+										<span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-wider ${
+											c.status === 'authorized' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
+											c.status === 'pending' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+											c.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+											'bg-slate-100 text-slate-500 dark:bg-secondary-800 dark:text-gray-400'
+										}`}>
+											{c.status === 'not_requested' ? 'Non demandé' : 
+											 c.status === 'authorized' ? 'Autorisé' : 
+											 c.status === 'pending' ? 'En attente' : 'Refusé'}
+										</span>
+									</div>
+									<h3 className="text-xl font-black text-slate-900 dark:text-white mb-1">{c.name}</h3>
+									<p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{c.code}</p>
+								</div>
+
+								<div className="mt-6">
+									{c.status === 'authorized' ? (
+										<div className="flex items-center gap-2 text-emerald-500 text-sm font-bold">
+											<CheckCircle className="w-5 h-5" />
+											Service actif
+										</div>
+									) : c.status === 'pending' ? (
+										<div className="flex items-center gap-2 text-blue-500 text-sm font-bold">
+											<Clock className="w-5 h-5" />
+											Demande en cours...
+										</div>
+									) : (
+										<button 
+											disabled={requestingCountries}
+											onClick={() => handleCountryRequest(c.code)}
+											className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-sm font-black rounded-xl hover:opacity-80 transition-all active:scale-95 disabled:opacity-50"
+										>
+											Demander l'activation
+										</button>
 									)}
 								</div>
 							</div>
@@ -480,6 +546,78 @@ const DeveloperDashboard = () => {
 						)}
 					</div>
 				)}
+
+				{/* ── Webhooks tab ── */}
+				{activeTab === "webhooks" && (
+					<div className="space-y-6">
+						<div className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+							<div className="flex items-center gap-3 mb-6">
+								<div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/30 text-violet-600 rounded-xl flex items-center justify-center">
+									<Zap className="w-5 h-5" />
+								</div>
+								<div>
+									<p className="font-black text-slate-900 dark:text-white">Configuration Webhook</p>
+									<p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Recevez des notifications en temps réel</p>
+								</div>
+							</div>
+
+							<div className="space-y-4">
+								<div>
+									<label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Endpoint URL</label>
+									<div className="flex flex-col sm:flex-row gap-3">
+										<input 
+											value={webhookUrl} 
+											onChange={e => setWebhookUrl(e.target.value)}
+											placeholder="https://votre-site.com/api/webhook"
+											className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-medium focus:border-primary-500 focus:outline-none"
+										/>
+										<button 
+											onClick={handleWebhookUpdate}
+											disabled={updatingWebhook}
+											className="px-6 py-3 bg-primary-500 hover:bg-primary-400 text-white font-black rounded-xl transition-all text-sm disabled:opacity-50"
+										>
+											{updatingWebhook ? "Mise à jour..." : "Enregistrer"}
+										</button>
+									</div>
+								</div>
+
+								<div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30">
+									<div className="flex items-start gap-3">
+										<Shield className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+										<div>
+											<p className="text-xs font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider mb-1">Secret Webhook</p>
+											<p className="text-xs text-amber-700 dark:text-amber-400 font-medium mb-3">Utilisez ce secret pour vérifier la signature `X-AfriKPay-Signature` de chaque requête.</p>
+											<div className="flex items-center gap-2">
+												<code className="flex-1 px-3 py-2 bg-white/50 dark:bg-black/20 text-amber-900 dark:text-amber-200 rounded-lg text-[10px] font-mono break-all border border-amber-200/50 dark:border-amber-800/30">
+													{webhookSecret}
+												</code>
+												<button onClick={() => copyKey(webhookSecret, "webhook")} className="p-2 hover:bg-white/50 rounded-lg transition-colors">
+													{copied === "webhook" ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-amber-600" />}
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+							<p className="font-black text-slate-900 dark:text-white mb-4">Événements disponibles</p>
+							<div className="space-y-2">
+								{[
+									{ event: "transfer.created", desc: "Déclenché dès qu'une transaction est initiée via l'API." },
+									{ event: "transfer.completed", desc: "Déclenché quand le transfert est réussi (bientôt disponible)." },
+									{ event: "transfer.failed", desc: "Déclenché en cas d'échec du transfert (bientôt disponible)." }
+								].map(ev => (
+									<div key={ev.event} className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-secondary-800/50 transition-colors">
+										<code className="text-[10px] bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 px-2 py-0.5 rounded font-mono shrink-0">{ev.event}</code>
+										<span className="text-xs text-slate-500 dark:text-gray-400 font-medium">{ev.desc}</span>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 
 			<WithdrawModal 
@@ -488,7 +626,7 @@ const DeveloperDashboard = () => {
 				balance={stats?.balance || 0}
 				onWithdraw={handleWithdraw}
 			/>
-		</div>
+		</DashboardLayout>
 	);
 };
 

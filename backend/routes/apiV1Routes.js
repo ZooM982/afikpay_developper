@@ -169,6 +169,20 @@ router.post("/transfer", async (req, res) => {
 			estimatedDelivery: "2 à 15 minutes",
 			createdAt: doc.createdAt
 		});
+
+		// ─── Envoi du Webhook (Asynchrone) ───
+		const { sendWebhook } = require("../services/webhookService");
+		sendWebhook(apiKey.clientId.toString(), "transfer.created", {
+			transactionId: doc.transactionId,
+			status: doc.status,
+			amount: doc.amount,
+			currency: doc.currency,
+			recipientPhone: doc.recipientPhone,
+			netAmount: doc.netAmount,
+			mode: doc.mode,
+			createdAt: doc.createdAt
+		}).catch(err => console.error("[Webhook Error]:", err));
+
 	} catch (err) {
 		console.error("[v1] /transfer:", err);
 		res.status(500).json({ error: "Erreur serveur" });

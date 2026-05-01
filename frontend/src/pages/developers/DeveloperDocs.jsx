@@ -144,30 +144,14 @@ const DeveloperDocs = () => {
   const [openCountry, setOpenCountry] = useState("SN");
 
   return (
-    <div className="min-h-screen bg-white dark:bg-secondary-950 font-sans">
-      {/* Topbar */}
-      <header className="sticky top-0 z-40 bg-white/90 dark:bg-secondary-900/90 backdrop-blur-md border-b border-slate-200 dark:border-secondary-800">
-        <div className="container mx-auto px-4 max-w-6xl flex items-center justify-between h-14">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-primary-500 rounded-lg flex items-center justify-center">
-                <Key className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-black text-sm text-slate-900 dark:text-white">AfriKPay API</span>
-            </Link>
-            <span className="text-slate-300 dark:text-secondary-700">/</span>
-            <span className="text-sm font-bold text-slate-500">Documentation</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to="/register" className="text-xs font-black px-4 py-2 bg-primary-500 hover:bg-primary-400 text-white rounded-xl transition-colors">
-              Obtenir une clé API
-            </Link>
-            <Link to="/dashboard" className="text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-gray-300 transition-colors">
-              Dashboard →
-            </Link>
-          </div>
+    <div className="min-h-screen bg-white dark:bg-secondary-950 font-sans pt-24">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest">
+          <Link to="/" className="hover:text-primary-500 transition-colors">Accueil</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-slate-600 dark:text-slate-300">Documentation</span>
         </div>
-      </header>
+      </div>
 
       <div className="container mx-auto px-4 max-w-6xl py-10">
         <div className="flex flex-col lg:flex-row gap-10">

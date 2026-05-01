@@ -58,9 +58,6 @@ const DeveloperRegister = () => {
 			<div className="w-full max-w-lg">
 				{/* Header */}
 				<div className="text-center mb-10">
-					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/20 border border-primary-500/30 text-primary-400 text-xs font-black uppercase tracking-widest mb-6">
-						<Key className="w-3.5 h-3.5" /> Portail Développeur
-					</div>
 					<h1 className="text-3xl md:text-4xl font-black text-white mb-3">Créer votre compte</h1>
 					<p className="text-slate-400 font-medium">Votre clé API sera générée instantanément</p>
 				</div>

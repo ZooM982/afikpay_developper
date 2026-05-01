@@ -23,7 +23,10 @@ async function connectToMongo() {
 			client = new MongoClient(uri);
 		}
 		await client.connect();
-		db = client.db("afripay");
+		const dbName = process.env.MONGO_DB_NAME || "afripay";
+		db = client.db(dbName);
+		
+		console.log(`Connecté à MongoDB - Base: ${dbName}`);
 		
 		transactionsCollection = db.collection("transactions");
 		notificationsCollection = db.collection("notifications");
