@@ -168,6 +168,58 @@ const getDeveloperProfile = async (req, res) => {
 	}
 };
 
+const updateDeveloperProfile = async (req, res) => {
+	try {
+		const { devId } = req.devUser;
+		const { name, company, useCase } = req.body;
+		const { ObjectId } = require("mongoose").mongo;
+
+		if (!name) return res.status(400).json({ error: "Le nom est requis" });
+
+		await devCol().updateOne(
+			{ _id: new ObjectId(devId) },
+			{ $set: { name, company, useCase, updatedAt: new Date() } }
+		);
+
+		res.json({ message: "Profil mis à jour avec succès" });
+	} catch (err) {
+		console.error("[dev] updateDeveloperProfile:", err);
+		res.status(500).json({ error: "Erreur serveur" });
+	}
+};
+
+const updateDeveloperPassword = async (req, res) => {
+	try {
+		const { devId } = req.devUser;
+		const { currentPassword, newPassword } = req.body;
+		const { ObjectId } = require("mongoose").mongo;
+
+		if (!currentPassword || !newPassword) {
+			return res.status(400).json({ error: "L'ancien et le nouveau mot de passe sont requis" });
+		}
+		if (newPassword.length < 8) {
+			return res.status(400).json({ error: "Le nouveau mot de passe doit contenir au moins 8 caractères" });
+		}
+
+		const dev = await devCol().findOne({ _id: new ObjectId(devId) });
+		if (!dev) return res.status(404).json({ error: "Compte introuvable" });
+
+		const valid = await bcrypt.compare(currentPassword, dev.passwordHash);
+		if (!valid) return res.status(401).json({ error: "L'ancien mot de passe est incorrect" });
+
+		const newHash = await bcrypt.hash(newPassword, 12);
+		await devCol().updateOne(
+			{ _id: new ObjectId(devId) },
+			{ $set: { passwordHash: newHash, updatedAt: new Date() } }
+		);
+
+		res.json({ message: "Mot de passe mis à jour avec succès" });
+	} catch (err) {
+		console.error("[dev] updateDeveloperPassword:", err);
+		res.status(500).json({ error: "Erreur serveur" });
+	}
+};
+
 const getDeveloperTransactions = async (req, res) => {
 	try {
 		const { devId } = req.devUser;
@@ -581,4 +633,6 @@ module.exports = {
 	getNotifications,
 	markNotificationsAsRead,
 	upgradePlan,
+	updateDeveloperProfile,
+	updateDeveloperPassword,
 };

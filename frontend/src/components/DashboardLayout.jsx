@@ -87,6 +87,7 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
  { name: 'Facturation & Plans', path: '/dashboard/billing', icon: <CreditCard size={20} /> },
  { name: 'Webhooks', path: '/dashboard/webhooks', icon: <Settings size={20} /> },
  { name: 'Logs', path: '/dashboard/logs', icon: <Activity size={20} /> },
+ { name: 'Paramètres', path: '/dashboard/settings', icon: <User size={20} /> },
  { name: 'Documentation', path: '/docs', icon: <BookOpen size={20} /> },
  ];
 

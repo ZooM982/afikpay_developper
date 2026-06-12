@@ -14,6 +14,7 @@ import Transactions from './pages/developers/dashboard/Transactions';
 import Logs from './pages/developers/dashboard/Logs';
 import Webhooks from './pages/developers/dashboard/Webhooks';
 import Billing from './pages/developers/dashboard/Billing';
+import Settings from './pages/developers/dashboard/Settings';
 import MerchantDocs from './pages/developers/DeveloperDocs';
 import CheckoutPage from './pages/checkout/CheckoutPage';
 import SuccessPage from './pages/checkout/SuccessPage';
@@ -92,6 +93,13 @@ function App() {
  <DashboardProvider>
  <DashboardLayout type="client">
  <Webhooks />
+ </DashboardLayout>
+ </DashboardProvider>
+ } />
+ <Route path="/dashboard/settings" element={
+ <DashboardProvider>
+ <DashboardLayout type="client">
+ <Settings />
  </DashboardLayout>
  </DashboardProvider>
  } />

@@ -10,6 +10,8 @@ router.post("/login", devCtrl.loginDeveloper);
 
 // ── Routes protégées (JWT développeur) ────────────────────────────────────
 router.get("/profile", authenticateDeveloper, devCtrl.getDeveloperProfile);
+router.put("/profile", authenticateDeveloper, devCtrl.updateDeveloperProfile);
+router.put("/password", authenticateDeveloper, devCtrl.updateDeveloperPassword);
 router.get("/keys", authenticateDeveloper, devCtrl.getDeveloperKeys);
 router.post("/keys", authenticateDeveloper, devCtrl.createDeveloperKey);
 router.delete("/keys/:keyId", authenticateDeveloper, devCtrl.revokeDeveloperKey);
