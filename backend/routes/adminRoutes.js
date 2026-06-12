@@ -22,4 +22,6 @@ router.get("/transactions", authenticateAdmin, adminCtrl.getTransactions);
 router.post("/push/subscribe", authenticateAdmin, adminCtrl.subscribePush);
 router.get("/push/vapid-key", authenticateAdmin, adminCtrl.getVapidPublicKey);
 
+router.put("/settings/password", authenticateAdmin, adminCtrl.updateAdminPassword);
+
 module.exports = router;

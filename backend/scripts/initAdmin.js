@@ -18,25 +18,29 @@ async function initAdmin() {
     const db = client.db(dbName);
     const adminCol = db.collection("admin_accounts");
 
-    const email = process.env.INITIAL_ADMIN_EMAIL || "Roll@afrikpay.tech";
+    const email = (process.env.INITIAL_ADMIN_EMAIL || "Roll@afrikpay.tech").toLowerCase();
     const password = process.env.INITIAL_ADMIN_PASSWORD || "RollTech242";
     const name = process.env.INITIAL_ADMIN_NAME || "Super Admin";
 
     const exists = await adminCol.findOne({ email });
+    const passwordHash = await bcrypt.hash(password, 12);
+
     if (exists) {
       console.log("Admin account already exists:", email);
-      return;
+      console.log("Updating password...");
+      await adminCol.updateOne({ email }, { $set: { passwordHash, name } });
+    } else {
+      await adminCol.insertOne({
+        name,
+        email,
+        passwordHash,
+        role: "super_admin",
+        createdAt: new Date(),
+        status: "active"
+      });
     }
 
-    const passwordHash = await bcrypt.hash(password, 12);
-    await adminCol.insertOne({
-      name,
-      email,
-      passwordHash,
-      role: "super_admin",
-      createdAt: new Date(),
-      status: "active"
-    });
+
 
     console.log("------------------------------------------");
     console.log("Admin Account Created Successfully!");

@@ -352,6 +352,32 @@ const getVapidPublicKey = (req, res) => {
 	res.json({ publicKey: process.env.VAPID_PUBLIC_KEY });
 };
 
+const updateAdminPassword = async (req, res) => {
+	try {
+		const { currentPassword, newPassword } = req.body;
+		const adminId = req.adminUser.adminId;
+		const { ObjectId } = require("mongoose").mongo;
+
+		const admin = await adminCol().findOne({ _id: new ObjectId(adminId) });
+		if (!admin) {
+			return res.status(404).json({ error: "Administrateur non trouvé" });
+		}
+
+		const valid = await bcrypt.compare(currentPassword, admin.passwordHash);
+		if (!valid) {
+			return res.status(401).json({ error: "Mot de passe actuel incorrect" });
+		}
+
+		const passwordHash = await bcrypt.hash(newPassword, 12);
+		await adminCol().updateOne({ _id: new ObjectId(adminId) }, { $set: { passwordHash } });
+
+		res.json({ message: "Mot de passe mis à jour avec succès" });
+	} catch (err) {
+		console.error("[admin] updateAdminPassword:", err);
+		res.status(500).json({ error: "Erreur serveur" });
+	}
+};
+
 module.exports = {
 	loginAdmin,
 	getDevelopers,
@@ -363,4 +389,5 @@ module.exports = {
 	getWithdrawals,
 	updateWithdrawalStatus,
 	getTransactions,
+	updateAdminPassword,
 };

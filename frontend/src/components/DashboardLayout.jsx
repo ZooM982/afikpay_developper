@@ -169,7 +169,7 @@ const DashboardLayout = ({ children, type = 'client' }) => {
  <div className="flex items-center gap-4">
  <button 
  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
- className="p-2 rounded hover:bg-slate-100 dark:hover:bg-secondary-800 text-slate-500 transition-colors"
+ className="hidden md:block p-2 rounded hover:bg-slate-100 dark:hover:bg-secondary-800 text-slate-500 transition-colors"
  >
  {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
  </button>
@@ -233,7 +233,7 @@ const DashboardLayout = ({ children, type = 'client' }) => {
  <div className="h-8 w-px bg-slate-200 dark:border-secondary-800 mx-1"></div>
  
  <div className="flex items-center gap-3">
- <div className="text-right hidden md:block">
+ <div className="text-right block">
  <p className="text-xs font-black text-slate-900 dark:text-white leading-none mb-1">{profile?.name || profile?.email?.split('@')[0] || 'Développeur'}</p>
  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">Marchand</p>
  </div>
