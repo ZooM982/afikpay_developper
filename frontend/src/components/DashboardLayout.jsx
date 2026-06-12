@@ -176,6 +176,13 @@ const DashboardLayout = ({ children, type = 'client' }) => {
  <h2 className="text-lg font-black text-slate-800 dark:text-white hidden sm:block">
  Espace Développeur
  </h2>
+ {/* Mobile Logo */}
+ <Link to="/dashboard" className="flex items-center gap-2 sm:hidden">
+   <div className="w-8 h-8 flex items-center justify-center shrink-0">
+     <img src="/logo.png" alt="AfrikPay" className="w-full h-full object-contain" />
+   </div>
+   <span className="font-black text-slate-900 dark:text-white text-lg">AfriKPay</span>
+ </Link>
  </div>
 
  <div className="flex items-center gap-4">
