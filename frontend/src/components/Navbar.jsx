@@ -28,11 +28,11 @@ const Navbar = () => {
       <div className="container mx-auto px-4 max-w-7xl flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-primary-500 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:rotate-6 transition-transform">
-            <Key className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 flex items-center justify-center group-hover:rotate-6 transition-transform">
+            <img src="/logo.png" alt="AfrikPay" className="w-full h-full object-contain" />
           </div>
           <div>
-            <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight">AfriKPay</span>
+            <span className={`text-xl font-black tracking-tight ${scrolled ? 'text-slate-900 dark:text-white' : 'text-white'}`}>AfriKPay</span>
             <span className="block text-[10px] font-bold text-primary-500 uppercase tracking-widest -mt-1">Developers</span>
           </div>
         </Link>
@@ -57,15 +57,26 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="hidden md:flex items-center gap-4">
-          <Link to="/login" className="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary-500 transition-colors">
-            Connexion
-          </Link>
-          <Link 
-            to="/register" 
-            className="px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-black rounded-xl hover:opacity-90 transition-all active:scale-95 shadow-xl shadow-slate-900/10 dark:shadow-white/10"
-          >
-            Créer un compte
-          </Link>
+          {localStorage.getItem('devToken') ? (
+            <Link 
+              to="/dashboard" 
+              className="px-6 py-2.5 bg-primary-500 text-white text-sm font-black rounded-xl hover:opacity-90 transition-all active:scale-95 shadow-xl shadow-primary-500/20"
+            >
+              Mon Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary-500 transition-colors">
+                Connexion
+              </Link>
+              <Link 
+                to="/register" 
+                className="px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-black rounded-xl hover:opacity-90 transition-all active:scale-95 shadow-xl shadow-slate-900/10 dark:shadow-white/10"
+              >
+                Créer un compte
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -91,12 +102,24 @@ const Navbar = () => {
             </Link>
           ))}
           <div className="pt-4 flex flex-col gap-3">
-            <Link to="/login" onClick={() => setIsOpen(false)} className="w-full py-3 text-center text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-secondary-700 rounded-xl">
-              Connexion
-            </Link>
-            <Link to="/register" onClick={() => setIsOpen(false)} className="w-full py-3 text-center bg-primary-500 text-white font-black rounded-xl">
-              S'inscrire
-            </Link>
+            {localStorage.getItem('devToken') ? (
+              <Link 
+                to="/dashboard" 
+                onClick={() => setIsOpen(false)} 
+                className="w-full py-3 text-center bg-primary-500 text-white font-black rounded-xl shadow-lg shadow-primary-500/20"
+              >
+                Mon Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setIsOpen(false)} className="w-full py-3 text-center text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-secondary-700 rounded-xl">
+                  Connexion
+                </Link>
+                <Link to="/register" onClick={() => setIsOpen(false)} className="w-full py-3 text-center bg-primary-500 text-white font-black rounded-xl">
+                  S'inscrire
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

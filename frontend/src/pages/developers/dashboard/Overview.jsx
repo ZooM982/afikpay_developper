@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { getApiUrl } from '../../../config';
 import { useDashboard } from './DashboardContext';
 import { Activity, CheckCircle, Clock, AlertTriangle, Copy, TrendingUp, TrendingDown } from 'lucide-react';
 import { 
@@ -20,8 +21,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const ActivityChart = ({ data = [] }) => {
   return (
-    <div className="h-[300px] w-full mt-4">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="h-[300px] w-full mt-4 overflow-hidden">
+      <ResponsiveContainer width="99.9%" height="100%">
         <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorCalls" x1="0" y1="0" x2="0" y2="1">
@@ -58,9 +59,86 @@ const ActivityChart = ({ data = [] }) => {
   );
 };
 
+const WithdrawModal = ({ isOpen, onClose, balance, onWithdraw }) => {
+  const [amount, setAmount] = useState("");
+  const [phone, setPhone] = useState("");
+  const [operator, setOperator] = useState("wave");
+  const [loading, setLoading] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await onWithdraw({ amount: Number(amount), phone, operator });
+    setLoading(false);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+      <div className="bg-white dark:bg-secondary-900 w-full max-w-md rounded-3xl p-8 shadow-2xl border border-slate-100 dark:border-secondary-800 animate-scale-in">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Retrait de fonds</h2>
+        <p className="text-sm text-slate-400 font-medium mb-6">Solde disponible : <span className="text-emerald-500 font-bold">{balance?.toLocaleString()} XOF</span></p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Montant à retirer (XOF)</label>
+            <input type="number" required value={amount} onChange={e => setAmount(e.target.value)}
+              max={balance} min="100"
+              placeholder="Ex: 5000"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none" />
+          </div>
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Numéro Mobile Money</label>
+            <input type="tel" required value={phone} onChange={e => setPhone(e.target.value)}
+              placeholder="Ex: 770000000"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none" />
+          </div>
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Opérateur</label>
+            <select value={operator} onChange={e => setOperator(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none">
+              <option value="wave">Wave</option>
+              <option value="orange">Orange Money</option>
+              <option value="free">Free Money</option>
+              <option value="e-money">E-Money</option>
+            </select>
+          </div>
+          <div className="flex gap-3 pt-4">
+            <button type="button" onClick={onClose} className="flex-1 py-4 text-sm font-black text-slate-400 hover:text-slate-600 transition-colors">Annuler</button>
+            <button type="submit" disabled={loading || !amount || amount > balance}
+              className="flex-[2] py-4 bg-primary-500 hover:bg-primary-400 disabled:opacity-50 text-white text-sm font-black rounded-2xl transition-all shadow-lg shadow-primary-500/20">
+              {loading ? "Traitement..." : "Confirmer le retrait"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const Overview = () => {
-  const { stats, loading } = useDashboard();
+  const { stats, loading, refresh } = useDashboard();
   const [copied, setCopied] = useState("");
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+
+  const handleWithdraw = async (withdrawalData) => {
+    try {
+      const devToken = localStorage.getItem('devToken');
+      const res = await fetch(`${getApiUrl()}/developer/withdraw`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${devToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify(withdrawalData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      alert(data.message);
+      refresh();
+    } catch (e) {
+      alert(e.message);
+    }
+  };
 
   const successRate = stats?.summary?.totalCalls ? Math.round(((stats.summary.totalCalls - (stats.summary.totalErrors || 0)) / stats.summary.totalCalls) * 100) : 100;
   
@@ -80,6 +158,12 @@ const Overview = () => {
 
   return (
     <div className="space-y-8 pb-12">
+      <WithdrawModal 
+        isOpen={showWithdrawModal} 
+        onClose={() => setShowWithdrawModal(false)} 
+        balance={stats?.balance || 0}
+        onWithdraw={handleWithdraw}
+      />
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1 p-6 rounded-3xl bg-slate-900 dark:bg-secondary-900 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group border border-slate-800">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-primary-500/20 transition-all duration-500"></div>
@@ -87,7 +171,7 @@ const Overview = () => {
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Solde disponible</p>
             <h3 className="text-3xl font-black text-primary-500">{stats?.balance?.toLocaleString() ?? "0"} <span className="text-sm font-medium text-white">XOF</span></h3>
           </div>
-          <button className="relative z-10 mt-6 w-full py-3 bg-primary-500 hover:bg-primary-400 text-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-primary-500/20">
+          <button onClick={() => setShowWithdrawModal(true)} className="relative z-10 mt-6 w-full py-3 bg-primary-500 hover:bg-primary-400 text-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-primary-500/20">
             Demander un retrait
           </button>
         </div>
@@ -134,8 +218,8 @@ const Overview = () => {
           <h3 className="font-black text-slate-900 dark:text-white mb-2">Répartition</h3>
           <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-8">Statut des requêtes</p>
           
-          <div className="h-[200px] w-full relative">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-[200px] w-full relative overflow-hidden">
+            <ResponsiveContainer width="99.9%" height="100%">
               <PieChart>
                 <Pie
                   data={distributionData}

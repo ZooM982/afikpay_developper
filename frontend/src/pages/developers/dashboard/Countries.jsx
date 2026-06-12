@@ -57,7 +57,7 @@ const Countries = () => {
               <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-4">{c.currency}</p>
               
               <div className="space-y-2">
-                {c.mobileMoneyProviders?.map(op => (
+                {c.status === 'authorized' && c.mobileMoneyProviders?.map(op => (
                   <div key={op.name} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-100 dark:border-secondary-700">
                     <span className="text-xs font-bold text-slate-600 dark:text-gray-300">{op.name}</span>
                     <span className="text-[10px] font-black text-primary-500">{op.payOutFee}% txn</span>
@@ -76,7 +76,21 @@ const Countries = () => {
                   <Clock className="w-4 h-4" /> Approbation en cours
                 </div>
               ) : (
-                <button className="text-primary-500 text-xs font-black uppercase hover:underline">Demander l'accès</button>
+                <button 
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(`${API}/developer/countries/request`, {
+                        method: "POST",
+                        headers,
+                        body: JSON.stringify({ countryCodes: [c.code] })
+                      });
+                      if (!res.ok) throw new Error("Erreur");
+                      refresh();
+                    } catch (e) { alert(e.message); }
+                  }}
+                  className="text-primary-500 text-xs font-black uppercase hover:underline">
+                  Demander l'accès
+                </button>
               )}
             </div>
           </div>

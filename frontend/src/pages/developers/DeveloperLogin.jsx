@@ -1,10 +1,10 @@
-// pages/developers/DeveloperLogin.jsx
+// pages/developers/MerchantLogin.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Key, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { getApiUrl } from "../../config";
 
-const DeveloperLogin = () => {
+const MerchantLogin = () => {
 	const navigate = useNavigate();
 	const [form, setForm] = useState({ email: "", password: "" });
 	const [showPass, setShowPass] = useState(false);
@@ -89,4 +89,4 @@ const DeveloperLogin = () => {
 	);
 };
 
-export default DeveloperLogin;
+export default MerchantLogin;

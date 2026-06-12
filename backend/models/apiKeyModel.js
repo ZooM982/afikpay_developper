@@ -107,6 +107,15 @@ const updateApiKeyPlan = async (keyId, newPlan) => {
 	});
 };
 
+const updateAllClientKeysPlan = async (clientId, newPlan) => {
+	const { ObjectId } = require("mongoose").mongo;
+	const id = typeof clientId === "string" ? new ObjectId(clientId) : clientId;
+	const quota = PLAN_QUOTAS[newPlan] ?? PLAN_QUOTAS.starter;
+	return await getCollection().updateMany({ clientId: id }, {
+		$set: { plan: newPlan, quotaMonthly: quota, updatedAt: new Date() },
+	});
+};
+
 function getNextMonthReset() {
 	const now = new Date();
 	return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
@@ -119,5 +128,6 @@ module.exports = {
 	getClientKeys,
 	revokeApiKey,
 	updateApiKeyPlan,
+	updateAllClientKeysPlan,
 	PLAN_QUOTAS,
 };

@@ -29,7 +29,7 @@ const PLANS = [
   },
 ];
 
-const DeveloperPricing = () => {
+const MerchantPricing = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-secondary-950 font-sans">
       {/* Header Section */}
@@ -39,7 +39,7 @@ const DeveloperPricing = () => {
             Des tarifs clairs pour <span className="bg-gradient-to-r from-primary-400 to-cyan-400 bg-clip-text text-transparent">votre croissance</span>
           </h1>
           <p className="text-lg text-slate-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
-            Choisissez le plan qui correspond à votre stade de développement. 
+            Choisissez le plan qui correspond à votre activité. 
             Aucun frais caché, une transparence totale sur chaque transaction.
           </p>
         </div>
@@ -114,4 +114,4 @@ const DeveloperPricing = () => {
   );
 };
 
-export default DeveloperPricing;
+export default MerchantPricing;

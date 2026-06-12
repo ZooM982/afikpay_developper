@@ -1,10 +1,10 @@
-// pages/developers/DeveloperRegister.jsx
+// pages/developers/MerchantRegister.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Key, ArrowRight, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { getApiUrl } from "../../config";
 
-const DeveloperRegister = () => {
+const MerchantRegister = () => {
 	const navigate = useNavigate();
 	const [form, setForm] = useState({ name: "", email: "", company: "", useCase: "", password: "", plan: "starter" });
 	const [showPass, setShowPass] = useState(false);
@@ -14,8 +14,8 @@ const DeveloperRegister = () => {
 
 	const PLANS = [
 		{ id: "starter", label: "Starter — Gratuit", desc: "50 txns/mois" },
-		{ id: "growth", label: "Growth — 49€/mois", desc: "1 000 txns/mois" },
-		{ id: "pro", label: "Pro — 149€/mois", desc: "10 000 txns/mois" },
+		{ id: "growth", label: "Growth — 10 000 FCFA/mois", desc: "1 000 txns/mois" },
+		{ id: "pro", label: "Pro — 30 000 FCFA/mois", desc: "10 000 txns/mois" },
 	];
 
 	const handleSubmit = async (e) => {
@@ -169,4 +169,4 @@ const DeveloperRegister = () => {
 	);
 };
 
-export default DeveloperRegister;
+export default MerchantRegister;

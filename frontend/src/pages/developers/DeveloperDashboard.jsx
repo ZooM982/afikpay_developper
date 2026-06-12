@@ -5,11 +5,11 @@ import DashboardLayout from "../../components/DashboardLayout";
 import {
 	Key, Copy, Eye, EyeOff, RefreshCw, Trash2, Plus,
 	BarChart3, Activity, AlertTriangle, CheckCircle,
-	LogOut, BookOpen, ExternalLink, Zap, Clock, Shield
+	LogOut, BookOpen, ExternalLink, Zap, Clock, Shield,
+	Bell, BellRing
 } from "lucide-react";
 import { getApiUrl } from "../../config";
-
-const API = getApiUrl();
+import { usePushNotifications } from "../../hooks/usePushNotifications";
 
 const PLAN_COLORS = {
 	starter: "bg-slate-100 text-slate-700 dark:bg-secondary-800 dark:text-gray-300",
@@ -274,6 +274,24 @@ const DeveloperDashboard = () => {
 							</button>
 						</div>
 						<button onClick={() => setJustCreated(null)} className="mt-3 text-xs text-amber-600 hover:text-amber-800 font-bold">J'ai copié ma clé, fermer</button>
+					</div>
+				)}
+
+				{/* ── Push Notifications Banner ── */}
+				{isSupported && !isSubscribed && (
+					<div className="p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+						<div className="flex items-center gap-3">
+							<div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center shrink-0">
+								<BellRing className="w-5 h-5" />
+							</div>
+							<div>
+								<p className="font-black text-blue-900 dark:text-blue-100 text-sm">Activez les notifications push</p>
+								<p className="text-xs text-blue-700 dark:text-blue-300 font-medium">Recevez des alertes en temps réel sur l'état de vos demandes et transactions.</p>
+							</div>
+						</div>
+						<button onClick={subscribeUser} className="shrink-0 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl transition-colors shadow-lg shadow-blue-500/20">
+							Activer
+						</button>
 					</div>
 				)}
 

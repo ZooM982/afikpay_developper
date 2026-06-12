@@ -10,8 +10,11 @@ const { connectToMongo } = require("./config/db");
 const developerRoutes = require("./routes/developerRoutes");
 const apiV1Routes = require("./routes/apiV1Routes");
 const adminRoutes = require("./routes/adminRoutes");
+const webhookRoutes = require("./routes/webhookRoutes");
 
 const app = express();
+// server.js
+// Force restart
 const server = http.createServer(app);
 
 app.set("trust proxy", 1);
@@ -23,6 +26,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 	: [
 			"http://localhost:3000",
 			"http://localhost:3001",
+			"http://localhost:3002",
 			"http://localhost:5173",
 			"https://www.afrikpay.tech",
 			"https://afrikpay.tech",
@@ -45,7 +49,7 @@ app.use(
 );
 
 const limiter = rateLimit({
-	max: 100,
+	max: process.env.NODE_ENV === "production" ? 100 : 5000,
 	windowMs: 15 * 60 * 1000,
 	message: "Too many requests, please try again later.",
 });
@@ -72,6 +76,7 @@ apiRouter.get("/ping", (req, res) => res.send("pong"));
 apiRouter.use("/developer", developerRoutes);
 apiRouter.use("/v1", apiV1Routes);
 apiRouter.use("/admin", adminRoutes);
+apiRouter.use("/webhooks", webhookRoutes);
 
 // Appliquer le routeur sur /api et sur la racine pour plus de flexibilité selon le déploiement
 app.use("/api", apiRouter);

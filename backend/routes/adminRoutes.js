@@ -11,4 +11,15 @@ router.post("/login", adminCtrl.loginAdmin);
 router.get("/developers", authenticateAdmin, adminCtrl.getDevelopers);
 router.put("/developers/:devId/countries", authenticateAdmin, adminCtrl.updateCountryStatus);
 
+router.get("/notifications", authenticateAdmin, adminCtrl.getNotifications);
+router.put("/notifications/read", authenticateAdmin, adminCtrl.markNotificationsAsRead);
+
+router.get("/withdrawals", authenticateAdmin, adminCtrl.getWithdrawals);
+router.put("/withdrawals/:id", authenticateAdmin, adminCtrl.updateWithdrawalStatus);
+
+router.get("/transactions", authenticateAdmin, adminCtrl.getTransactions);
+
+router.post("/push/subscribe", authenticateAdmin, adminCtrl.subscribePush);
+router.get("/push/vapid-key", authenticateAdmin, adminCtrl.getVapidPublicKey);
+
 module.exports = router;

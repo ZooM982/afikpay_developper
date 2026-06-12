@@ -8,7 +8,7 @@ const authenticateAdmin = (req, res, next) => {
 	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 		if (err) return res.status(403).json({ error: "Token invalide ou expiré" });
 		
-		if (decoded.role !== "admin") {
+		if (!decoded.role || !decoded.role.includes("admin")) {
 			return res.status(403).json({ error: "Accès refusé. Droits administrateur requis." });
 		}
 		

@@ -8,16 +8,16 @@ const Webhooks = () => {
   const [updating, setUpdating] = useState(false);
   const [copied, setCopied] = useState("");
 
+  useEffect(() => {
+    if (stats?.webhookUrl) setWebhookUrl(stats.webhookUrl);
+  }, [stats]);
+
   if (loading) return (
     <div className="space-y-6 animate-pulse">
       <div className="h-64 bg-slate-100 dark:bg-secondary-900 rounded-3xl" />
       <div className="h-48 bg-slate-100 dark:bg-secondary-900 rounded-3xl" />
     </div>
   );
-
-  useEffect(() => {
-    if (stats?.webhookUrl) setWebhookUrl(stats.webhookUrl);
-  }, [stats]);
 
   const updateWebhook = async () => {
     setUpdating(true);
@@ -98,8 +98,8 @@ const Webhooks = () => {
         <div className="space-y-3">
           {[
             { event: "transfer.created", desc: "Envoyé dès la création d'une demande de transfert." },
-            { event: "transfer.completed", desc: "Envoyé lorsque le transfert est confirmé par l'opérateur (Bientôt)." },
-            { event: "transfer.failed", desc: "Envoyé si le transfert échoue (Bientôt)." }
+            { event: "transfer.completed", desc: "Envoyé lorsque le transfert est confirmé par l'opérateur." },
+            { event: "transfer.failed", desc: "Envoyé lorsque le transfert a échoué." }
           ].map(ev => (
             <div key={ev.event} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-secondary-800/50 transition-colors">
               <code className="text-[10px] bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 px-2 py-1 rounded-md font-mono">{ev.event}</code>

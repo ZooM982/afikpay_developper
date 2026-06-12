@@ -101,12 +101,6 @@ const countries = [
 			{ name: "Zamani Cash", payInFee: 4, payOutFee: 2 },
 		],
 	},
-	{ code: "TD", name: "Tchad", currency: "XAF", phoneCode: "+235", phoneLength: 8,
-		mobileMoneyProviders: [
-			{ name: "Airtel Money", payInFee: 6.5, payOutFee: 3 },
-			{ name: "Moov Money", payInFee: 6.5, payOutFee: 3 },
-		],
-	},
 ];
 
 module.exports = { countries };

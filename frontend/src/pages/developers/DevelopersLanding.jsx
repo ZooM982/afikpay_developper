@@ -1,4 +1,4 @@
-// pages/developers/DevelopersLanding.jsx
+// pages/developers/MerchantsLanding.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -6,7 +6,7 @@ import {
 	Terminal, Key, BarChart3, Webhook, BookOpen, ChevronRight,
 } from "lucide-react";
 
-const PLANS = []; // Moved to DeveloperPricing.jsx
+const PLANS = []; // Moved to MerchantPricing.jsx
 
 const FEATURES = [
 	{ icon: <Zap className="w-6 h-6" />, title: "Intégration en 5 min", desc: "Une clé API, quelques requêtes HTTP. Aucune configuration complexe.", color: "text-amber-600 bg-amber-50 dark:bg-amber-900/20" },
@@ -41,7 +41,7 @@ const CODE_SAMPLE = `const res = await fetch('https://api.afrikpay.tech/v1/trans
 });
 // { transactionId: 'TXN_abc123', status: 'pending' }`;
 
-const DevelopersLanding = () => {
+const MerchantsLanding = () => {
 	const [copied, setCopied] = React.useState(false);
 
 	const copy = () => {
@@ -176,7 +176,7 @@ const DevelopersLanding = () => {
 					style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
 				<div className="container mx-auto px-4 max-w-3xl text-center relative z-10">
 					<h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">Prêt à intégrer l'API ?</h2>
-					<p className="text-slate-300 text-lg mb-10 font-medium">Créez votre compte développeur gratuitement. Votre première clé API est disponible immédiatement.</p>
+					<p className="text-slate-300 text-lg mb-10 font-medium">Créez votre compte Marchand gratuitement. Votre première clé API est disponible immédiatement.</p>
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
 						<Link to="/register"
 							className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-primary-500 hover:bg-primary-400 text-white font-black rounded-2xl transition-all hover:-translate-y-0.5 shadow-xl shadow-primary-500/30 text-lg">
@@ -193,4 +193,4 @@ const DevelopersLanding = () => {
 	);
 };
 
-export default DevelopersLanding;
+export default MerchantsLanding;

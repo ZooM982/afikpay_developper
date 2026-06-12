@@ -20,5 +20,12 @@ router.post("/withdraw", authenticateDeveloper, devCtrl.requestDeveloperWithdraw
 router.get("/countries", authenticateDeveloper, devCtrl.getAvailableCountries);
 router.post("/countries/request", authenticateDeveloper, devCtrl.requestCountries);
 router.post("/webhook", authenticateDeveloper, devCtrl.updateDeveloperWebhook);
+router.post("/upgrade", authenticateDeveloper, devCtrl.upgradePlan);
+
+router.get("/notifications", authenticateDeveloper, devCtrl.getNotifications);
+router.put("/notifications/read", authenticateDeveloper, devCtrl.markNotificationsAsRead);
+
+router.post("/push/subscribe", authenticateDeveloper, devCtrl.subscribePush);
+router.get("/push/vapid-key", authenticateDeveloper, devCtrl.getVapidPublicKey);
 
 module.exports = router;

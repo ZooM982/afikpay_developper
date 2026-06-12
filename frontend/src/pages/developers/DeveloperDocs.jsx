@@ -32,11 +32,17 @@ const res = await fetch('https://api.afrikpay.tech/api/v1/transfer', {
   "transactionId": "TXN_6a3f9b2c",
   "status": "pending",
   "amount": 50000,
-  "fee": 1200,
-  "netAmount": 48800,
+  "fees": {
+    "platform": 400,
+    "operator": 1200,
+    "total": 1600
+  },
+  "netAmount": 48400,
   "currency": "XOF",
+  "countryCode": "SN",
   "operator": "wave",
   "recipientPhone": "+221771234567",
+  "estimatedDelivery": "2 à 15 minutes",
   "createdAt": "2026-04-22T09:00:00.000Z"
 }`,
 
@@ -49,8 +55,12 @@ const res = await fetch(
 // Réponse
 {
   "transactionId": "TXN_6a3f9b2c",
-  "status": "completed",   // pending | processing | completed | failed
-  "completedAt": "2026-04-22T09:02:15.000Z"
+  "status": "completed",   // pending | completed | failed
+  "amount": 50000,
+  "fee": 400,
+  "currency": "XOF",
+  "createdAt": "2026-04-22T09:00:00.000Z",
+  "updatedAt": "2026-04-22T09:02:15.000Z"
 }`,
 
   countries: `// GET /api/v1/countries
@@ -72,16 +82,21 @@ const res = await fetch(
   webhook: `// Configurez votre endpoint dans le dashboard
 // AfriKPay enverra un POST HTTP sur votre URL à chaque événement
 
-// Payload reçu
+// Payload reçu (ex: transfer.completed)
 {
   "event": "transfer.completed",
   "transactionId": "TXN_6a3f9b2c",
   "status": "completed",
   "amount": 50000,
-  "fee": 1200,
-  "timestamp": "2026-04-22T09:02:15.000Z",
-  "signature": "sha256=abc123..."  // Vérifiez avec votre webhook_secret
+  "currency": "XOF",
+  "recipientPhone": "+221771234567",
+  "netAmount": 48400,
+  "mode": "live",
+  "createdAt": "2026-04-22T09:00:00.000Z"
 }
+
+// Remarque: Un header signature est également envoyé pour vérification cryptographique.
+// X-AfrikPay-Signature: sha256=abc123...
 
 // Vérification de la signature (Node.js)
 const crypto = require('crypto');
@@ -297,8 +312,7 @@ const DeveloperDocs = () => {
               </p>
               <div className="space-y-3 mb-6">
                 {[
-                  { event: "transfer.pending", desc: "Transfert créé, en attente de paiement" },
-                  { event: "transfer.processing", desc: "Paiement reçu, traitement en cours" },
+                  { event: "transfer.created", desc: "Envoyé dès la création d'une demande de transfert" },
                   { event: "transfer.completed", desc: "Fonds crédités chez le bénéficiaire" },
                   { event: "transfer.failed", desc: "Échec du transfert" },
                 ].map(ev => (
