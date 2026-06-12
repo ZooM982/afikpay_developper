@@ -7,21 +7,18 @@ const crypto = require("crypto");
 const router = express.Router();
 
 router.post("/afribapay", async (req, res) => {
-	// Vérification de la signature Afribapay
-	// Afribapay envoie la signature dans X-Afribapay-Signature (HMAC-SHA256 du body)
+	// Protection par token secret dans l'URL
+	// L'URL enregistrée chez Afribapay doit inclure ?token=AFRIBAPAY_WEBHOOK_SECRET
+	// ex: https://api.afrikpay.tech/api/webhooks/afribapay?token=xxx
 	const webhookSecret = process.env.AFRIBAPAY_WEBHOOK_SECRET;
 	if (webhookSecret) {
-		const receivedSig = req.headers["x-afribapay-signature"] || req.headers["x-signature"] || "";
-		const expectedSig = crypto
-			.createHmac("sha256", webhookSecret)
-			.update(JSON.stringify(req.body))
-			.digest("hex");
-		if (!receivedSig || !crypto.timingSafeEqual(
-			Buffer.from(receivedSig.toLowerCase()),
-			Buffer.from(expectedSig.toLowerCase())
+		const receivedToken = req.query.token || "";
+		if (!receivedToken || !crypto.timingSafeEqual(
+			Buffer.from(receivedToken),
+			Buffer.from(webhookSecret)
 		)) {
-			console.warn("⚠️ Webhook Afribapay rejeté : signature invalide");
-			return res.status(401).json({ error: "Signature invalide" });
+			console.warn("⚠️ Webhook Afribapay rejeté : token invalide");
+			return res.status(401).json({ error: "Non autorisé" });
 		}
 	}
 
