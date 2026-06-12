@@ -19,7 +19,7 @@ async function initAdmin() {
     const adminCol = db.collection("admin_accounts");
 
     const email = process.env.INITIAL_ADMIN_EMAIL || "Roll@afrikpay.tech";
-    const password = process.env.INITIAL_ADMIN_PASSWORD || "admin_afrikpay_2026";
+    const password = process.env.INITIAL_ADMIN_PASSWORD || "RollTech242";
     const name = process.env.INITIAL_ADMIN_NAME || "Super Admin";
 
     const exists = await adminCol.findOne({ email });
