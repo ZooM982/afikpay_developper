@@ -32,7 +32,7 @@ const UsageChart = ({ daily = [] }) => {
 						className="w-full bg-primary-500/20 dark:bg-primary-500/30 rounded-t-sm group-hover:bg-primary-500 transition-colors"
 						style={{ height: `${(d.calls / max) * 100}%`, minHeight: d.calls > 0 ? "4px" : "0" }}
 					/>
-					<div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap z-10">
+					<div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded whitespace-nowrap z-10">
 						{d._id}: {d.calls} appels
 					</div>
 				</div>
@@ -60,7 +60,7 @@ const WithdrawModal = ({ isOpen, onClose, balance, onWithdraw }) => {
 
 	return (
 		<div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-			<div className="bg-white dark:bg-secondary-900 w-full max-w-md rounded-3xl p-8 shadow-2xl border border-slate-100 dark:border-secondary-800 animate-scale-in">
+			<div className="bg-white dark:bg-secondary-900 w-full max-w-md rounded-md p-8 border border-slate-100 dark:border-secondary-800 animate-scale-in">
 				<h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Retrait de fonds</h2>
 				<p className="text-sm text-slate-400 font-medium mb-6">Solde disponible : <span className="text-emerald-500 font-bold">{balance?.toLocaleString()} XOF</span></p>
 
@@ -70,18 +70,18 @@ const WithdrawModal = ({ isOpen, onClose, balance, onWithdraw }) => {
 						<input type="number" required value={amount} onChange={e => setAmount(e.target.value)}
 							max={balance} min="100"
 							placeholder="Ex: 5000"
-							className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none" />
+							className="w-full px-4 py-3 rounded-md bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none" />
 					</div>
 					<div>
 						<label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Numéro Mobile Money</label>
 						<input type="tel" required value={phone} onChange={e => setPhone(e.target.value)}
 							placeholder="Ex: 770000000"
-							className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none" />
+							className="w-full px-4 py-3 rounded-md bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none" />
 					</div>
 					<div>
 						<label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Opérateur</label>
 						<select value={operator} onChange={e => setOperator(e.target.value)}
-							className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none">
+							className="w-full px-4 py-3 rounded-md bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-bold focus:border-primary-500 outline-none">
 							<option value="wave">Wave</option>
 							<option value="orange">Orange Money</option>
 							<option value="free">Free Money</option>
@@ -91,7 +91,7 @@ const WithdrawModal = ({ isOpen, onClose, balance, onWithdraw }) => {
 					<div className="flex gap-3 pt-4">
 						<button type="button" onClick={onClose} className="flex-1 py-4 text-sm font-black text-slate-400 hover:text-slate-600 transition-colors">Annuler</button>
 						<button type="submit" disabled={loading || !amount || amount > balance}
-							className="flex-[2] py-4 bg-primary-500 hover:bg-primary-400 disabled:opacity-50 text-white text-sm font-black rounded-2xl transition-all shadow-lg shadow-primary-500/20">
+							className="flex-[2] py-4 bg-primary-500 hover:bg-primary-400 disabled:opacity-50 text-white text-sm font-black rounded-md transition-all ">
 							{loading ? "Traitement..." : "Confirmer le retrait"}
 						</button>
 					</div>
@@ -257,7 +257,7 @@ const DeveloperDashboard = () => {
 			<div className="space-y-8">
 				{/* ── Alert clé créée ── */}
 				{justCreated && (
-					<div className="p-5 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-400 dark:border-amber-600">
+					<div className="p-5 rounded-md bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-400 dark:border-amber-600">
 						<div className="flex items-start gap-3 mb-3">
 							<AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
 							<div>
@@ -266,9 +266,9 @@ const DeveloperDashboard = () => {
 							</div>
 						</div>
 						<div className="flex items-center gap-2 mt-3">
-							<code className="flex-1 px-4 py-3 bg-amber-900/20 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 rounded-xl text-sm font-mono break-all">{justCreated}</code>
+							<code className="flex-1 px-4 py-3 bg-amber-900/20 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 rounded-md text-sm font-mono break-all">{justCreated}</code>
 							<button onClick={() => copyKey(justCreated, "created")}
-								className="shrink-0 px-4 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-xl text-sm font-black transition-colors flex items-center gap-2">
+								className="shrink-0 px-4 py-3 bg-amber-500 hover:bg-amber-400 text-white rounded-md text-sm font-black transition-colors flex items-center gap-2">
 								{copied === "created" ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
 								{copied === "created" ? "Copié" : "Copier"}
 							</button>
@@ -279,9 +279,9 @@ const DeveloperDashboard = () => {
 
 				{/* ── Push Notifications Banner ── */}
 				{isSupported && !isSubscribed && (
-					<div className="p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+					<div className="p-4 rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">
 						<div className="flex items-center gap-3">
-							<div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center shrink-0">
+							<div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-md flex items-center justify-center shrink-0">
 								<BellRing className="w-5 h-5" />
 							</div>
 							<div>
@@ -289,7 +289,7 @@ const DeveloperDashboard = () => {
 								<p className="text-xs text-blue-700 dark:text-blue-300 font-medium">Recevez des alertes en temps réel sur l'état de vos demandes et transactions.</p>
 							</div>
 						</div>
-						<button onClick={subscribeUser} className="shrink-0 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl transition-colors shadow-lg shadow-blue-500/20">
+						<button onClick={subscribeUser} className="shrink-0 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-md transition-colors ">
 							Activer
 						</button>
 					</div>
@@ -298,14 +298,14 @@ const DeveloperDashboard = () => {
 				{/* ── Balance & Stats ── */}
 				<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 					{/* Balance Card */}
-					<div className="lg:col-span-1 p-6 rounded-3xl bg-gradient-premium text-white shadow-2xl shadow-blue-900/20 flex flex-col justify-between relative overflow-hidden group">
+					<div className="lg:col-span-1 p-6 rounded-md bg-gradient-premium text-white flex flex-col justify-between relative overflow-hidden group">
 						<div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-white/20 transition-all duration-500"></div>
 						<div className="relative z-10">
 							<p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-300 mb-1">Solde disponible</p>
 							<h3 className="text-3xl font-black">{stats?.balance?.toLocaleString() ?? "0"} <span className="text-sm font-medium">XOF</span></h3>
 						</div>
 						<button onClick={() => setShowWithdrawModal(true)} 
-							className="relative z-10 mt-6 w-full py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95">
+							className="relative z-10 mt-6 w-full py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-md text-xs font-black uppercase tracking-widest transition-all active:scale-95">
 							Demander un retrait
 						</button>
 					</div>
@@ -316,7 +316,7 @@ const DeveloperDashboard = () => {
 							{ label: "Taux de succès", value: stats?.summary?.totalCalls ? `${Math.round(((stats.summary.totalCalls - (stats.summary.totalErrors || 0)) / stats.summary.totalCalls) * 100)}%` : "—", icon: <CheckCircle className="w-5 h-5" />, color: "text-emerald-600" },
 							{ label: "Latence moy.", value: stats?.summary?.avgResponseMs ? `${Math.round(stats.summary.avgResponseMs)}ms` : "—", icon: <Clock className="w-5 h-5" />, color: "text-blue-600" },
 						].map((s, i) => (
-							<div key={i} className="p-5 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+							<div key={i} className="p-5 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
 								<div className={`${s.color} mb-3`}>{s.icon}</div>
 								<p className="text-2xl font-black text-slate-900 dark:text-white">{s.value}</p>
 								<p className="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">{s.label}</p>
@@ -326,13 +326,13 @@ const DeveloperDashboard = () => {
 				</div>
 
 				{/* ── Usage chart ── */}
-				<div className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+				<div className="p-6 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
 					<div className="flex items-center justify-between mb-6">
 						<div>
 							<p className="font-black text-slate-900 dark:text-white">Consommation — 30 derniers jours</p>
 							<p className="text-xs text-slate-400 font-bold mt-0.5">Nombre d'appels API par jour</p>
 						</div>
-						<button onClick={fetchAll} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-secondary-800 transition-colors">
+						<button onClick={fetchAll} className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-secondary-800 transition-colors">
 							<RefreshCw className="w-4 h-4 text-slate-400" />
 						</button>
 					</div>
@@ -345,19 +345,19 @@ const DeveloperDashboard = () => {
 				{activeTab === "keys" && (
 					<div className="space-y-4">
 						{/* Create key form */}
-						<div className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+						<div className="p-6 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
 							<p className="font-black text-slate-900 dark:text-white mb-4">Créer une nouvelle clé</p>
 							<div className="flex flex-col sm:flex-row gap-3">
 								<input value={newLabel} onChange={e => setNewLabel(e.target.value)}
 									placeholder="Label (ex: Mon app mobile)"
-									className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-medium focus:border-primary-500 focus:outline-none" />
+									className="flex-1 px-4 py-3 rounded-md bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-medium focus:border-primary-500 focus:outline-none" />
 								<select value={newEnv} onChange={e => setNewEnv(e.target.value)}
-									className="px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-medium focus:border-primary-500 focus:outline-none">
+									className="px-4 py-3 rounded-md bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-medium focus:border-primary-500 focus:outline-none">
 									<option value="live">Production (live)</option>
 									<option value="test">Sandbox (test)</option>
 								</select>
 								<button onClick={createKey} disabled={creating}
-									className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-400 disabled:opacity-60 text-white font-black rounded-xl transition-all text-sm">
+									className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-400 disabled:opacity-60 text-white font-black rounded-md transition-all text-sm">
 									{creating ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Plus className="w-4 h-4" />}
 									Créer
 								</button>
@@ -366,12 +366,12 @@ const DeveloperDashboard = () => {
 
 						{/* Keys list */}
 						{keys.length === 0 ? (
-							<div className="p-12 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 text-center">
+							<div className="p-12 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 text-center">
 								<Key className="w-10 h-10 text-slate-300 dark:text-secondary-600 mx-auto mb-3" />
 								<p className="text-slate-500 dark:text-gray-400 font-medium">Aucune clé API. Créez-en une ci-dessus.</p>
 							</div>
 						) : keys.map(k => (
-							<div key={k._id} className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+							<div key={k._id} className="p-6 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
 								<div className="flex flex-wrap items-start justify-between gap-4 mb-4">
 									<div>
 										<div className="flex items-center gap-2 flex-wrap">
@@ -395,12 +395,12 @@ const DeveloperDashboard = () => {
 								</div>
 
 								{/* Key display */}
-								<div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-100 dark:border-secondary-700 mb-4">
+								<div className="flex items-center gap-2 p-3 rounded-md bg-slate-50 dark:bg-secondary-800 border border-slate-100 dark:border-secondary-700 mb-4">
 									<code className="flex-1 text-sm font-mono text-slate-700 dark:text-gray-300 truncate">
 										{showKey[k._id] ? k.keyPrefix + "••••••••••••••••••••" : k.keyPrefix + "••••••••••••••••••••"}
 									</code>
 									<button onClick={() => copyKey(k.keyPrefix, k._id)}
-										className="shrink-0 p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-secondary-700 transition-colors">
+										className="shrink-0 p-1.5 rounded hover:bg-slate-200 dark:hover:bg-secondary-700 transition-colors">
 										{copied === k._id ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-slate-400" />}
 									</button>
 								</div>
@@ -427,7 +427,7 @@ const DeveloperDashboard = () => {
 				{activeTab === "countries" && (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 						{availableCountries.map((c) => (
-							<div key={c.code} className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 flex flex-col justify-between hover:shadow-xl transition-all group">
+							<div key={c.code} className="p-6 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 flex flex-col justify-between hover: transition-all group">
 								<div>
 									<div className="flex justify-between items-start mb-4">
 										<span className="text-4xl">{c.flag}</span>
@@ -461,7 +461,7 @@ const DeveloperDashboard = () => {
 										<button 
 											disabled={requestingCountries}
 											onClick={() => handleCountryRequest(c.code)}
-											className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-sm font-black rounded-xl hover:opacity-80 transition-all active:scale-95 disabled:opacity-50"
+											className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-sm font-black rounded-md hover:opacity-80 transition-all active:scale-95 disabled:opacity-50"
 										>
 											Demander l'activation
 										</button>
@@ -474,10 +474,10 @@ const DeveloperDashboard = () => {
 
 				{/* ── Transactions tab ── */}
 				{activeTab === "tx" && (
-					<div className="rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 overflow-hidden">
+					<div className="rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 overflow-hidden">
 						<div className="p-5 border-b border-slate-100 dark:border-secondary-800 flex items-center justify-between">
 							<p className="font-black text-slate-900 dark:text-white">Historique des transferts API</p>
-							<button onClick={fetchAll} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-secondary-800 transition-colors">
+							<button onClick={fetchAll} className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-secondary-800 transition-colors">
 								<RefreshCw className="w-4 h-4 text-slate-400" />
 							</button>
 						</div>
@@ -519,10 +519,10 @@ const DeveloperDashboard = () => {
 					</div>
 				)}
 				{activeTab === "logs" && (
-					<div className="rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 overflow-hidden">
+					<div className="rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800 overflow-hidden">
 						<div className="p-5 border-b border-slate-100 dark:border-secondary-800 flex items-center justify-between">
 							<p className="font-black text-slate-900 dark:text-white">20 derniers appels</p>
-							<button onClick={fetchAll} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-secondary-800 transition-colors">
+							<button onClick={fetchAll} className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-secondary-800 transition-colors">
 								<RefreshCw className="w-4 h-4 text-slate-400" />
 							</button>
 						</div>
@@ -568,9 +568,9 @@ const DeveloperDashboard = () => {
 				{/* ── Webhooks tab ── */}
 				{activeTab === "webhooks" && (
 					<div className="space-y-6">
-						<div className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+						<div className="p-6 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
 							<div className="flex items-center gap-3 mb-6">
-								<div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/30 text-violet-600 rounded-xl flex items-center justify-center">
+								<div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/30 text-violet-600 rounded-md flex items-center justify-center">
 									<Zap className="w-5 h-5" />
 								</div>
 								<div>
@@ -587,29 +587,29 @@ const DeveloperDashboard = () => {
 											value={webhookUrl} 
 											onChange={e => setWebhookUrl(e.target.value)}
 											placeholder="https://votre-site.com/api/webhook"
-											className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-medium focus:border-primary-500 focus:outline-none"
+											className="flex-1 px-4 py-3 rounded-md bg-slate-50 dark:bg-secondary-800 border border-slate-200 dark:border-secondary-700 text-slate-900 dark:text-white text-sm font-medium focus:border-primary-500 focus:outline-none"
 										/>
 										<button 
 											onClick={handleWebhookUpdate}
 											disabled={updatingWebhook}
-											className="px-6 py-3 bg-primary-500 hover:bg-primary-400 text-white font-black rounded-xl transition-all text-sm disabled:opacity-50"
+											className="px-6 py-3 bg-primary-500 hover:bg-primary-400 text-white font-black rounded-md transition-all text-sm disabled:opacity-50"
 										>
 											{updatingWebhook ? "Mise à jour..." : "Enregistrer"}
 										</button>
 									</div>
 								</div>
 
-								<div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30">
+								<div className="p-4 rounded-md bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30">
 									<div className="flex items-start gap-3">
 										<Shield className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
 										<div>
 											<p className="text-xs font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider mb-1">Secret Webhook</p>
 											<p className="text-xs text-amber-700 dark:text-amber-400 font-medium mb-3">Utilisez ce secret pour vérifier la signature `X-AfriKPay-Signature` de chaque requête.</p>
 											<div className="flex items-center gap-2">
-												<code className="flex-1 px-3 py-2 bg-white/50 dark:bg-black/20 text-amber-900 dark:text-amber-200 rounded-lg text-[10px] font-mono break-all border border-amber-200/50 dark:border-amber-800/30">
+												<code className="flex-1 px-3 py-2 bg-white/50 dark:bg-black/20 text-amber-900 dark:text-amber-200 rounded text-[10px] font-mono break-all border border-amber-200/50 dark:border-amber-800/30">
 													{webhookSecret}
 												</code>
-												<button onClick={() => copyKey(webhookSecret, "webhook")} className="p-2 hover:bg-white/50 rounded-lg transition-colors">
+												<button onClick={() => copyKey(webhookSecret, "webhook")} className="p-2 hover:bg-white/50 rounded transition-colors">
 													{copied === "webhook" ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-amber-600" />}
 												</button>
 											</div>
@@ -619,7 +619,7 @@ const DeveloperDashboard = () => {
 							</div>
 						</div>
 
-						<div className="p-6 rounded-2xl bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
+						<div className="p-6 rounded-md bg-white dark:bg-secondary-900 border border-slate-100 dark:border-secondary-800">
 							<p className="font-black text-slate-900 dark:text-white mb-4">Événements disponibles</p>
 							<div className="space-y-2">
 								{[
@@ -627,7 +627,7 @@ const DeveloperDashboard = () => {
 									{ event: "transfer.completed", desc: "Déclenché quand le transfert est réussi (bientôt disponible)." },
 									{ event: "transfer.failed", desc: "Déclenché en cas d'échec du transfert (bientôt disponible)." }
 								].map(ev => (
-									<div key={ev.event} className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-secondary-800/50 transition-colors">
+									<div key={ev.event} className="flex items-center gap-4 p-3 rounded-md hover:bg-slate-50 dark:hover:bg-secondary-800/50 transition-colors">
 										<code className="text-[10px] bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 px-2 py-0.5 rounded font-mono shrink-0">{ev.event}</code>
 										<span className="text-xs text-slate-500 dark:text-gray-400 font-medium">{ev.desc}</span>
 									</div>

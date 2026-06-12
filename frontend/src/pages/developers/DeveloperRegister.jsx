@@ -63,9 +63,9 @@ const MerchantRegister = () => {
 				</div>
 
 				{/* Form */}
-				<form onSubmit={handleSubmit} className="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-8 space-y-5 backdrop-blur-sm">
+				<form onSubmit={handleSubmit} className="bg-slate-800/50 border border-slate-700/50 rounded-md p-8 space-y-5 backdrop-blur-sm">
 					{error && (
-						<div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium">
+						<div className="p-4 rounded-md bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium">
 							{error}
 						</div>
 					)}
@@ -76,7 +76,7 @@ const MerchantRegister = () => {
 							<input
 								required value={form.name}
 								onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-								className="w-full px-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
+								className="w-full px-4 py-3.5 rounded-md bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
 								placeholder="Mamadou Diallo"
 							/>
 						</div>
@@ -85,7 +85,7 @@ const MerchantRegister = () => {
 							<input
 								value={form.company}
 								onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
-								className="w-full px-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
+								className="w-full px-4 py-3.5 rounded-md bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
 								placeholder="FinTech Dakar (optionnel)"
 							/>
 						</div>
@@ -96,7 +96,7 @@ const MerchantRegister = () => {
 						<input
 							required type="email" value={form.email}
 							onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-							className="w-full px-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
+							className="w-full px-4 py-3.5 rounded-md bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium"
 							placeholder="dev@monapp.com"
 						/>
 					</div>
@@ -107,7 +107,7 @@ const MerchantRegister = () => {
 							required type={showPass ? "text" : "password"} value={form.password}
 							onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
 							minLength={8}
-							className="w-full px-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium pr-12"
+							className="w-full px-4 py-3.5 rounded-md bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium pr-12"
 							placeholder="8 caractères minimum"
 						/>
 						<button type="button" onClick={() => setShowPass(p => !p)}
@@ -122,7 +122,7 @@ const MerchantRegister = () => {
 							value={form.useCase}
 							onChange={e => setForm(f => ({ ...f, useCase: e.target.value }))}
 							rows={2}
-							className="w-full px-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium resize-none"
+							className="w-full px-4 py-3.5 rounded-md bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all text-sm font-medium resize-none"
 							placeholder="Ex: App mobile de transfert pour étudiants sénégalais…"
 						/>
 					</div>
@@ -131,7 +131,7 @@ const MerchantRegister = () => {
 						<label className="block text-xs font-black text-slate-400 uppercase tracking-wider mb-3">Plan *</label>
 						<div className="space-y-2">
 							{PLANS.map(p => (
-								<label key={p.id} className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all ${form.plan === p.id ? "border-primary-500 bg-primary-500/10" : "border-slate-700 hover:border-slate-600"}`}>
+								<label key={p.id} className={`flex items-center gap-4 p-4 rounded-md border-2 cursor-pointer transition-all ${form.plan === p.id ? "border-primary-500 bg-primary-500/10" : "border-slate-700 hover:border-slate-600"}`}>
 									<input type="radio" name="plan" value={p.id} checked={form.plan === p.id}
 										onChange={e => setForm(f => ({ ...f, plan: e.target.value }))}
 										className="accent-primary-500 w-4 h-4" />
@@ -145,7 +145,7 @@ const MerchantRegister = () => {
 					</div>
 
 					<button type="submit" disabled={loading}
-						className="w-full py-4 bg-primary-500 hover:bg-primary-400 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black rounded-2xl transition-all hover:-translate-y-0.5 shadow-xl shadow-primary-500/25 flex items-center justify-center gap-3 text-lg mt-2">
+						className="w-full py-4 bg-primary-500 hover:bg-primary-400 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black rounded-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-3 text-lg mt-2">
 						{loading ? (
 							<span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
 						) : (
