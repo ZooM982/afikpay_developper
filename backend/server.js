@@ -32,6 +32,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 			"https://afrikpay.tech",
 			"https://afikpay-developper.vercel.app",
 			"https://developers.afrikpay.tech",
+			"https://adminmerchand.afrikpay.tech",
 		];
 
 app.use(
