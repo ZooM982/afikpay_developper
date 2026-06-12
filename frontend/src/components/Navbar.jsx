@@ -33,7 +33,7 @@ const Navbar = () => {
           </div>
           <div>
             <span className={`text-xl font-black tracking-tight ${scrolled ? 'text-slate-900 dark:text-white' : 'text-white'}`}>AfriKPay</span>
-            <span className="block text-[10px] font-bold text-primary-500 uppercase tracking-widest -mt-1">Developers</span>
+            <span className="block text-[10px] font-bold text-primary-500 uppercase tracking-widest -mt-1">Merchants</span>
           </div>
         </Link>
 
