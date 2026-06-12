@@ -87,7 +87,7 @@ const sendCountryAccessEmail = async (to, name, countryCode, status) => {
       <div style="font-family: Arial, sans-serif; max-w-xl mx-auto p-4">
         <h2 style="color: #2D3748;">Bonjour ${name},</h2>
         <p>Votre demande d'accès au marché <strong>${countryCode}</strong> a été <span style="color: ${color}; font-weight: bold;">${statusText}</span> par nos administrateurs.</p>
-        ${isAuthorized ? '<p>Vous pouvez désormais traiter des paiements dans ce pays.</p>' : '<p>Si vous pensez qu\\'il s\\'agit d\\'une erreur, n\\'hésitez pas à contacter notre support.</p>'}
+        ${isAuthorized ? "<p>Vous pouvez désormais traiter des paiements dans ce pays.</p>" : "<p>Si vous pensez qu'il s'agit d'une erreur, n'hésitez pas à contacter notre support.</p>"}
         <br>
         <p>Cordialement,</p>
         <p>L'équipe AfrikPay</p>
