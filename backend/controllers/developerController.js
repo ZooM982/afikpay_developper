@@ -36,6 +36,10 @@ const registerDeveloper = async (req, res) => {
 
 		const token = jwt.sign({ devId: clientId.toString(), email: doc.email, plan }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
+		// Envoi de l'e-mail de bienvenue
+		const { sendWelcomeEmail } = require("../services/emailService");
+		sendWelcomeEmail(doc.email, doc.name);
+
 		res.status(201).json({
 			message: "Compte créé avec succès",
 			token,

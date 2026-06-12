@@ -102,6 +102,10 @@ const updateCountryStatus = async (req, res) => {
 					url: notification.url
 				});
 			}
+
+			// Envoi de l'e-mail
+			const { sendCountryAccessEmail } = require("../services/emailService");
+			sendCountryAccessEmail(dev.email, dev.name, countryCode, status);
 		}
 
 		res.json({ message: `Le statut du pays ${countryCode} a été mis à jour : ${status}` });
@@ -312,6 +316,10 @@ const updateWithdrawalStatus = async (req, res) => {
 					url: notification.url
 				});
 			}
+
+			// Envoi de l'e-mail
+			const { sendWithdrawalStatusEmail } = require("../services/emailService");
+			sendWithdrawalStatusEmail(dev.email, dev.name, withdrawal.amount, status);
 		}
 
 		res.json({ message: `Le retrait a été ${status === 'completed' ? 'approuvé' : 'rejeté'}` });
