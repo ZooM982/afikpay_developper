@@ -34,16 +34,11 @@ const registerDeveloper = async (req, res) => {
 		const result = await devCol().insertOne(doc);
 		const clientId = result.insertedId;
 
-		// Générer la première clé API automatiquement
-		const keyData = await createApiKey({ clientId, plan, environment: "live", label: `Clé ${plan} — Principale` });
-
 		const token = jwt.sign({ devId: clientId.toString(), email: doc.email, plan }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
 		res.status(201).json({
 			message: "Compte créé avec succès",
 			token,
-			rawKey: keyData.rawKey, // Retourné une seule fois
-			keyPrefix: keyData.keyPrefix,
 		});
 	} catch (err) {
 		console.error("[dev] registerDeveloper:", err);
