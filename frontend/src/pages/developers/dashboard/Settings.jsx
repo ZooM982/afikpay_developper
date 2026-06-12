@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Lock, User, Building, ShieldAlert } from 'lucide-react';
+import { useDashboard } from './DashboardContext';
 
 export default function Settings() {
+  const { profile, refresh, API, headers } = useDashboard();
   const [activeTab, setActiveTab] = useState('profile');
   
   const [profileForm, setProfileForm] = useState({
@@ -22,28 +24,15 @@ export default function Settings() {
   const [success, setSuccess] = useState(null);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('devToken');
-        if (!token) return;
-        const res = await fetch('http://localhost:5001/v1/developer/profile', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setProfileForm({
-            name: data.name || '',
-            company: data.company || '',
-            useCase: data.useCase || '',
-            email: data.email || ''
-          });
-        }
-      } catch (err) {
-        console.error("Erreur lors du chargement du profil:", err);
-      }
-    };
-    fetchProfile();
-  }, []);
+    if (profile) {
+      setProfileForm({
+        name: profile.name || '',
+        company: profile.company || '',
+        useCase: profile.useCase || '',
+        email: profile.email || ''
+      });
+    }
+  }, [profile]);
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
@@ -52,13 +41,9 @@ export default function Settings() {
     setSuccess(null);
 
     try {
-      const token = localStorage.getItem('devToken');
-      const res = await fetch('http://localhost:5001/v1/developer/profile', {
+      const res = await fetch(`${API}/developer/profile`, {
         method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
-        },
+        headers,
         body: JSON.stringify({
           name: profileForm.name,
           company: profileForm.company,
@@ -68,6 +53,7 @@ export default function Settings() {
       const data = await res.json();
       if (res.ok) {
         setSuccess("Profil mis à jour avec succès !");
+        refresh(); // update navbar
       } else {
         setError(data.error || "Une erreur est survenue.");
       }
@@ -91,13 +77,9 @@ export default function Settings() {
     }
 
     try {
-      const token = localStorage.getItem('devToken');
-      const res = await fetch('http://localhost:5001/v1/developer/password', {
+      const res = await fetch(`${API}/developer/password`, {
         method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
-        },
+        headers,
         body: JSON.stringify({
           currentPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword

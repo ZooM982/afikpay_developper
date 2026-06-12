@@ -7,8 +7,9 @@ import {
 } from 'lucide-react';
 import { getApiUrl } from '../config';
 import { usePushNotifications } from '../hooks/usePushNotifications';
+import { useDashboard } from '../pages/developers/dashboard/DashboardContext';
 
-const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
+const DashboardLayout = ({ children, type = 'client' }) => {
  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
  const [notifications, setNotifications] = useState([]);
  const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -17,6 +18,7 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
  
  const navigate = useNavigate();
  const location = useLocation();
+ const { profile } = useDashboard();
 
  const token = localStorage.getItem('devToken');
  const apiPath = '/developer/notifications';
@@ -232,8 +234,8 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
  
  <div className="flex items-center gap-3">
  <div className="text-right hidden md:block">
- <p className="text-xs font-black text-slate-900 dark:text-white leading-none mb-1">{userEmail.split('@')[0]}</p>
- <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">Merchant</p>
+ <p className="text-xs font-black text-slate-900 dark:text-white leading-none mb-1">{profile?.name || profile?.email?.split('@')[0] || 'Développeur'}</p>
+ <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">Marchand</p>
  </div>
  <div className="w-10 h-10 rounded-md bg-slate-100 dark:bg-secondary-800 flex items-center justify-center border border-slate-200 dark:border-secondary-700 overflow-hidden">
  <User size={20} className="text-slate-400" />

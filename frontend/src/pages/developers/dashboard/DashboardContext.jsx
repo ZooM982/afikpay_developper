@@ -12,6 +12,7 @@ export const DashboardProvider = ({ children }) => {
  const [logs, setLogs] = useState([]);
  const [apiTransactions, setApiTransactions] = useState([]);
  const [availableCountries, setAvailableCountries] = useState([]);
+ const [profile, setProfile] = useState(null);
  const [loading, setLoading] = useState(true);
  const [error, setError] = useState(null);
 
@@ -25,12 +26,13 @@ export const DashboardProvider = ({ children }) => {
  }
  setLoading(true);
  try {
- const [keysRes, statsRes, logsRes, txRes, countriesRes] = await Promise.all([
+ const [keysRes, statsRes, logsRes, txRes, countriesRes, profileRes] = await Promise.all([
  fetch(`${API}/developer/keys`, { headers }),
  fetch(`${API}/developer/stats`, { headers }),
  fetch(`${API}/developer/logs?limit=20`, { headers }),
  fetch(`${API}/developer/transactions`, { headers }),
  fetch(`${API}/developer/countries`, { headers }),
+ fetch(`${API}/developer/profile`, { headers }),
  ]);
 
  if (keysRes.status === 401) {
@@ -39,12 +41,13 @@ export const DashboardProvider = ({ children }) => {
  return;
  }
 
- const [keysData, statsData, logsData, txData, countriesData] = await Promise.all([
+ const [keysData, statsData, logsData, txData, countriesData, profileData] = await Promise.all([
  keysRes.json(),
  statsRes.json(),
  logsRes.json(),
  txRes.json(),
  countriesRes.json(),
+ profileRes.json(),
  ]);
 
  setKeys(keysData.keys || []);
@@ -52,6 +55,7 @@ export const DashboardProvider = ({ children }) => {
  setLogs(logsData.logs || []);
  setApiTransactions(txData.transactions || []);
  setAvailableCountries(countriesData.countries || []);
+ setProfile(profileData || null);
  } catch (e) {
  console.error(e);
  setError(e.message);
@@ -68,6 +72,7 @@ export const DashboardProvider = ({ children }) => {
  <DashboardContext.Provider value={{
  keys, setKeys, stats, setStats, logs, setLogs, 
  apiTransactions, setApiTransactions, availableCountries, setAvailableCountries,
+ profile, setProfile,
  loading, error, refresh: fetchAll, devToken, headers, API
  }}>
  {children}
