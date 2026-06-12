@@ -12,7 +12,9 @@ const devCol = () => getDb().collection("developer_accounts");
 // ─── Inscription développeur ─────────────────────────────────────────────────
 const registerDeveloper = async (req, res) => {
 	try {
-		const { name, email, company = "", useCase = "", password, plan = "starter" } = req.body;
+		const { name, email, company = "", useCase = "", password } = req.body;
+		// Le plan est toujours starter à l'inscription — il ne peut pas être choisi par le client
+		const plan = "starter";
 		if (!name || !email || !password) return res.status(400).json({ error: "name, email, password requis" });
 		if (password.length < 8) return res.status(400).json({ error: "Mot de passe trop court (min 8 car.)" });
 
@@ -296,14 +298,19 @@ const requestDeveloperWithdrawal = async (req, res) => {
 		if (!phone || !operator) return res.status(400).json({ error: "Téléphone et opérateur requis" });
 
 		const db = getDb();
-		const dev = await devCol().findOne({ _id: new ObjectId(devId) });
 
-		if (!dev || (dev.balance || 0) < amount) {
+		// 1. Débiter le solde de façon atomique — évite la double-dépense par requêtes parallèles
+		const updatedDev = await devCol().findOneAndUpdate(
+			{ _id: new ObjectId(devId), balance: { $gte: amount } },
+			{ $inc: { balance: -amount } },
+			{ returnDocument: "after" }
+		);
+
+		if (!updatedDev) {
 			return res.status(400).json({ error: "Solde insuffisant pour ce retrait" });
 		}
 
-		// 1. Débiter le solde
-		await devCol().updateOne({ _id: new ObjectId(devId) }, { $inc: { balance: -amount } });
+		const dev = updatedDev;
 
 		// 2. Créer la demande de retrait
 		const withdrawal = {
@@ -500,8 +507,31 @@ const updateDeveloperWebhook = async (req, res) => {
 		const { webhookUrl } = req.body;
 		const { ObjectId } = require("mongoose").mongo;
 
-		if (webhookUrl && !webhookUrl.startsWith("http")) {
-			return res.status(400).json({ error: "URL invalide" });
+		if (webhookUrl) {
+			let parsed;
+			try {
+				parsed = new URL(webhookUrl);
+			} catch {
+				return res.status(400).json({ error: "URL invalide" });
+			}
+			if (!["http:", "https:"].includes(parsed.protocol)) {
+				return res.status(400).json({ error: "Protocole non autorisé (http/https uniquement)" });
+			}
+			// Bloquer les destinations internes pour éviter le SSRF
+			const blockedPatterns = [
+				/^localhost$/i,
+				/^127\./,
+				/^10\./,
+				/^172\.(1[6-9]|2\d|3[01])\./,
+				/^192\.168\./,
+				/^169\.254\./,           // AWS/Azure metadata
+				/^metadata\.google\.internal$/i,
+				/^fd[0-9a-f]{2}:/i,      // IPv6 ULA
+				/^::1$/,
+			];
+			if (blockedPatterns.some(p => p.test(parsed.hostname))) {
+				return res.status(400).json({ error: "URL non autorisée : destination interne interdite" });
+			}
 		}
 
 		const dev = await devCol().findOne({ _id: new ObjectId(devId) });

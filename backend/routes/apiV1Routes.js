@@ -286,8 +286,8 @@ router.post("/checkout/sessions", async (req, res) => {
 
 		await db.collection("checkout_sessions").insertOne(sessionDoc);
 
-		// On construit l'URL de paiement vers notre frontend
-		const frontendUrl = req.headers.origin || (process.env.NODE_ENV === "production" ? "https://afrikpay.tech" : "http://localhost:3001");
+		// URL construite uniquement depuis la config serveur — jamais depuis le header Origin (évite l'open redirect)
+		const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === "production" ? "https://afrikpay.tech" : "http://localhost:3001");
 		const url = `${frontendUrl}/pay/${sessionId}`;
 
 		res.status(201).json({ sessionId, url });
@@ -530,8 +530,12 @@ router.post("/transfer/:id/callback", async (req, res) => {
 	try {
 		const db = getDb();
 		const txn = await db.collection("api_transactions").findOne({ transactionId: id });
-		
+
 		if (!txn) return res.status(404).json({ error: "Transaction introuvable" });
+		// Vérifier que la transaction appartient bien à la clé API appelante
+		if (txn.clientId.toString() !== apiKey.clientId.toString()) {
+			return res.status(403).json({ error: "Accès non autorisé à cette transaction" });
+		}
 		if (txn.status !== "pending") return res.status(400).json({ error: "La transaction n'est plus en attente" });
 
 		await db.collection("api_transactions").updateOne(
