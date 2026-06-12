@@ -198,7 +198,7 @@ const DashboardLayout = ({ children, type = 'client' }) => {
  </button>
 
  {isNotifOpen && (
- <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-secondary-900 rounded-md border border-slate-100 dark:border-secondary-800 z-50 overflow-hidden flex flex-col">
+ <div className="absolute -right-16 sm:right-0 mt-2 w-[300px] sm:w-80 bg-white dark:bg-secondary-900 rounded-md border border-slate-100 dark:border-secondary-800 z-50 overflow-hidden flex flex-col">
  <div className="p-4 border-b border-slate-100 dark:border-secondary-800 flex items-center justify-between bg-slate-50 dark:bg-secondary-800/50">
  <h3 className="font-black text-slate-900 dark:text-white text-sm">Notifications</h3>
  {unreadCount > 0 && <span className="bg-primary-100 text-primary-600 text-[10px] font-bold px-2 py-0.5 rounded-full">{unreadCount} non lues</span>}
