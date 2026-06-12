@@ -80,15 +80,15 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
  const unreadCount = notifications.filter(n => !n.isRead).length;
 
  const clientLinks = [
- { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
- { name: 'Clés API', path: '/dashboard/keys', icon: <Key size={20} /> },
- { name: 'Pays & Services', path: '/dashboard/countries', icon: <Globe size={20} /> },
- { name: 'Transactions', path: '/dashboard/transactions', icon: <CreditCard size={20} /> },
- { name: 'Facturation & Plans', path: '/dashboard/billing', icon: <CreditCard size={20} /> },
- { name: 'Webhooks', path: '/dashboard/webhooks', icon: <Settings size={20} /> },
- { name: 'Logs', path: '/dashboard/logs', icon: <Activity size={20} /> },
- { name: 'Paramètres', path: '/dashboard/settings', icon: <User size={20} /> },
- { name: 'Documentation', path: '/docs', icon: <BookOpen size={20} /> },
+ { name: 'Dashboard', mobileName: 'Accueil', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+ { name: 'Clés API', mobileName: 'Clés', path: '/dashboard/keys', icon: <Key size={20} /> },
+ { name: 'Pays & Services', mobileName: 'Pays', path: '/dashboard/countries', icon: <Globe size={20} /> },
+ { name: 'Transactions', mobileName: 'Paiements', path: '/dashboard/transactions', icon: <CreditCard size={20} /> },
+ { name: 'Facturation & Plans', mobileName: 'Forfaits', path: '/dashboard/billing', icon: <CreditCard size={20} /> },
+ { name: 'Webhooks', mobileName: 'Webhooks', path: '/dashboard/webhooks', icon: <Settings size={20} /> },
+ { name: 'Logs', mobileName: 'Logs', path: '/dashboard/logs', icon: <Activity size={20} /> },
+ { name: 'Paramètres', mobileName: 'Paramètres', path: '/dashboard/settings', icon: <User size={20} /> },
+ { name: 'Documentation', mobileName: 'Docs', path: '/docs', icon: <BookOpen size={20} /> },
  ];
 
  const links = clientLinks;
@@ -280,7 +280,7 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
  <div className={`${isActive ? 'scale-110' : ''} transition-transform`}>
  {link.icon}
  </div>
- <span className="text-[10px] font-black uppercase tracking-tighter">{link.name}</span>
+ <span className="text-[10px] font-black uppercase tracking-tighter">{link.mobileName || link.name}</span>
  </Link>
  );
  })}
