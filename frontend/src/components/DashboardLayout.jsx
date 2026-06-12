@@ -245,7 +245,7 @@ const DashboardLayout = ({ children, type = 'client' }) => {
  </header>
 
  {/* Content Body */}
- <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar pb-24 md:pb-8">
+ <main className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 custom-scrollbar pb-24 md:pb-6">
  <div className="max-w-7xl mx-auto space-y-6">
  {isSupported && !isSubscribed && (
  <div className="p-4 rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">

@@ -100,7 +100,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-5 sm:p-6 max-w-4xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Paramètres du compte</h1>
         <p className="text-gray-500 dark:text-gray-400">Gérez vos informations personnelles et vos préférences de sécurité.</p>
@@ -146,7 +146,7 @@ export default function Settings() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-[#0b1120] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8">
+      <div className="bg-white dark:bg-[#0b1120] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 sm:p-6">
         {activeTab === 'profile' && (
           <form onSubmit={handleProfileSubmit} className="space-y-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Informations personnelles</h2>
