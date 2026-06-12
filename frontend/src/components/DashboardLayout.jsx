@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
  LayoutDashboard, Key, Globe, History, Activity, 
  Settings, LogOut, Menu, X, Bell, User, ChevronRight,
- ShieldCheck, Users, CreditCard, CheckCircle, ExternalLink, BookOpen
+ ShieldCheck, Users, CreditCard, CheckCircle, ExternalLink, BookOpen, MoreHorizontal
 } from 'lucide-react';
 import { getApiUrl } from '../config';
 import { usePushNotifications } from '../hooks/usePushNotifications';
@@ -12,6 +12,7 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
  const [notifications, setNotifications] = useState([]);
  const [isNotifOpen, setIsNotifOpen] = useState(false);
+ const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  const notifRef = useRef(null);
  
  const navigate = useNavigate();
@@ -267,7 +268,7 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
 
  {/* Mobile Bottom Navigation */}
  <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-secondary-900 border-t border-slate-200 dark:border-secondary-800 px-2 py-3 flex items-center justify-around z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
- {links.slice(0, 5).map((link) => {
+ {links.slice(0, 4).map((link) => {
  const isActive = location.pathname + location.search === link.path || (location.pathname === link.path && !location.search && link.name === 'Dashboard');
  return (
  <Link
@@ -284,7 +285,70 @@ const DashboardLayout = ({ children, type = 'client', userEmail = '' }) => {
  </Link>
  );
  })}
+ <button
+ onClick={() => setIsMobileMenuOpen(true)}
+ className="flex flex-col items-center gap-1 transition-all text-slate-400"
+ >
+ <div className="transition-transform">
+ <MoreHorizontal size={20} />
+ </div>
+ <span className="text-[10px] font-black uppercase tracking-tighter">Plus</span>
+ </button>
  </nav>
+
+ {/* Mobile Menu Modal */}
+ {isMobileMenuOpen && (
+ <div className="md:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end">
+ <div className="bg-white dark:bg-secondary-900 w-full rounded-t-3xl p-6 shadow-2xl relative" style={{ animation: 'slideUp 0.3s ease-out forwards' }}>
+ <style>{`
+ @keyframes slideUp {
+ from { transform: translateY(100%); }
+ to { transform: translateY(0); }
+ }
+ `}</style>
+ <button 
+ onClick={() => setIsMobileMenuOpen(false)}
+ className="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-secondary-800 rounded-full text-slate-500 dark:text-slate-400"
+ >
+ <X size={20} />
+ </button>
+ <h3 className="font-black text-slate-900 dark:text-white mb-6 text-lg">Menu</h3>
+ <div className="grid grid-cols-4 gap-4">
+ {links.map((link) => {
+ const isActive = location.pathname + location.search === link.path || (location.pathname === link.path && !location.search && link.name === 'Dashboard');
+ return (
+ <Link
+ key={link.name}
+ to={link.path}
+ onClick={() => setIsMobileMenuOpen(false)}
+ className={`flex flex-col items-center justify-start p-3 rounded-xl gap-2 transition-all ${
+ isActive 
+ ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-500' 
+ : 'bg-slate-50 dark:bg-secondary-800 text-slate-500 hover:bg-slate-100 dark:hover:bg-secondary-700'
+ }`}
+ >
+ {link.icon}
+ <span className="text-[10px] font-black uppercase tracking-tighter text-center leading-tight">
+ {link.mobileName || link.name}
+ </span>
+ </Link>
+ );
+ })}
+ </div>
+ <button 
+ onClick={() => {
+ setIsMobileMenuOpen(false);
+ handleLogout();
+ }}
+ className="w-full mt-6 py-4 flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-black rounded-xl"
+ >
+ <LogOut size={20} />
+ Déconnexion
+ </button>
+ </div>
+ </div>
+ )}
+
  </div>
  </div>
  );
